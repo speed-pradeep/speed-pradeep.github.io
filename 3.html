@@ -1,0 +1,2433 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Galaxy Game Hub</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial,sans-serif;
+    color:white;
+    background:
+        radial-gradient(circle at 20% 20%,#4b168f,transparent 30%),
+        radial-gradient(circle at 80% 70%,#064d78,transparent 30%),
+        #03000d;
+    overflow-x:hidden;
+}
+
+/* STARS */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+
+    background-image:
+        radial-gradient(2px 2px at 20% 30%,white,transparent),
+        radial-gradient(1px 1px at 40% 70%,white,transparent),
+        radial-gradient(2px 2px at 70% 20%,white,transparent),
+        radial-gradient(1px 1px at 90% 80%,white,transparent),
+        radial-gradient(2px 2px at 55% 45%,white,transparent);
+
+    background-size:300px 250px;
+
+    animation:stars 25s linear infinite;
+}
+
+@keyframes stars{
+
+    from{
+        transform:translateY(0);
+    }
+
+    to{
+        transform:translateY(250px);
+    }
+
+}
+
+/* START SCREEN */
+
+.start-screen{
+
+    position:fixed;
+    inset:0;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+        radial-gradient(circle at center,#24105c,#03000d 70%);
+
+    z-index:1000;
+
+}
+
+.start-box{
+
+    width:90%;
+    max-width:650px;
+
+    text-align:center;
+
+    padding:50px 30px;
+
+    border:1px solid #ffffff20;
+    border-radius:30px;
+
+    background:#ffffff08;
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+        0 0 80px #7b2cff30;
+
+}
+
+.logo-big{
+
+    font-size:55px;
+    font-weight:900;
+
+    margin-bottom:15px;
+
+    text-shadow:
+        0 0 20px #00d9ff,
+        0 0 40px #7b2cff;
+
+}
+
+.logo-big span{
+    color:#00d9ff;
+}
+
+.start-title{
+
+    font-size:28px;
+    margin-bottom:10px;
+
+}
+
+.start-text{
+
+    color:#aaa;
+    margin-bottom:30px;
+
+}
+
+.start-button{
+
+    border:0;
+
+    padding:18px 45px;
+
+    border-radius:50px;
+
+    color:white;
+
+    font-size:20px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    background:
+        linear-gradient(
+            90deg,
+            #7b2cff,
+            #00bfff
+        );
+
+    box-shadow:
+        0 0 25px #7b2cff80;
+
+    transition:.3s;
+
+}
+
+.start-button:hover{
+
+    transform:scale(1.08);
+
+    box-shadow:
+        0 0 50px #00d9ff;
+
+}
+
+/* MAIN */
+
+#mainGame{
+
+    display:none;
+
+}
+
+/* HEADER */
+
+header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    padding:15px 5%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:#050014dd;
+
+    backdrop-filter:blur(15px);
+
+    border-bottom:1px solid #ffffff15;
+
+}
+
+.logo{
+
+    font-size:22px;
+    font-weight:900;
+
+}
+
+.logo span{
+
+    color:#00d9ff;
+
+}
+
+/* CONTAINER */
+
+.container{
+
+    width:92%;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:40px 0 70px;
+
+}
+
+.title{
+
+    text-align:center;
+
+    font-size:40px;
+
+    margin-bottom:10px;
+
+    text-shadow:0 0 20px #7b2cff;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#888;
+
+    margin-bottom:35px;
+
+}
+
+/* GAME MENU */
+
+.game-menu{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(200px,1fr));
+
+    gap:18px;
+
+}
+
+.game-button{
+
+    padding:25px 15px;
+
+    border:1px solid #ffffff15;
+
+    border-radius:20px;
+
+    background:#ffffff08;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.game-button:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#7b2cff;
+
+    box-shadow:
+        0 15px 40px #7b2cff30;
+
+}
+
+.game-icon{
+
+    font-size:45px;
+
+    margin-bottom:12px;
+
+}
+
+.game-button h3{
+
+    margin-bottom:5px;
+
+}
+
+.game-button p{
+
+    color:#777;
+
+    font-size:12px;
+
+}
+
+/* GAME SCREEN */
+
+.game-screen{
+
+    display:none;
+
+    margin-top:30px;
+
+    padding:30px;
+
+    border:1px solid #ffffff15;
+
+    border-radius:25px;
+
+    background:#ffffff06;
+
+}
+
+.game-screen.active{
+
+    display:block;
+
+}
+
+.game-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.close-btn{
+
+    background:#ff3d71;
+
+    border:0;
+
+    color:white;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+/* SNAKE */
+
+#snakeCanvas{
+
+    display:block;
+
+    margin:auto;
+
+    max-width:100%;
+
+    background:#020713;
+
+    border:2px solid #00d9ff;
+
+    box-shadow:0 0 30px #00d9ff30;
+
+}
+
+.score{
+
+    text-align:center;
+
+    margin:15px;
+
+    font-size:18px;
+
+}
+
+/* TIC TAC TOE */
+
+.ttt-board{
+
+    width:330px;
+
+    max-width:100%;
+
+    margin:20px auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:8px;
+
+}
+
+.ttt-cell{
+
+    height:100px;
+
+    border:1px solid #7b2cff;
+
+    background:#ffffff08;
+
+    color:white;
+
+    font-size:40px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    border-radius:12px;
+
+}
+
+.ttt-cell:hover{
+
+    background:#7b2cff30;
+
+}
+
+/* BUTTON */
+
+.action-btn{
+
+    display:block;
+
+    margin:15px auto;
+
+    border:0;
+
+    padding:12px 22px;
+
+    border-radius:12px;
+
+    color:white;
+
+    background:
+        linear-gradient(
+            90deg,
+            #7b2cff,
+            #00bfff
+        );
+
+    cursor:pointer;
+
+}
+
+/* REACTION */
+
+.reaction-box{
+
+    max-width:600px;
+
+    height:300px;
+
+    margin:auto;
+
+    border-radius:20px;
+
+    background:#30105a;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    font-size:25px;
+
+    font-weight:bold;
+
+}
+
+.reaction-box.ready{
+
+    background:#126b35;
+
+}
+
+.reaction-box.wait{
+
+    background:#662020;
+
+}
+
+/* QUIZ */
+
+.quiz-box{
+
+    max-width:650px;
+
+    margin:auto;
+
+}
+
+.question{
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    margin-bottom:20px;
+
+}
+
+.answer{
+
+    display:block;
+
+    width:100%;
+
+    padding:14px;
+
+    margin:10px 0;
+
+    border:1px solid #ffffff15;
+
+    border-radius:12px;
+
+    background:#ffffff08;
+
+    color:white;
+
+    cursor:pointer;
+
+    text-align:left;
+
+}
+
+.answer:hover{
+
+    background:#7b2cff30;
+
+}
+
+/* TARGET */
+
+.target-area{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:800px;
+
+    height:450px;
+
+    margin:auto;
+
+    border:1px solid #ffffff20;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:#020713;
+
+}
+
+.target{
+
+    position:absolute;
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            white 8%,
+            #ff3d71 10%,
+            #ff3d71 30%,
+            white 32%,
+            white 45%,
+            #ff3d71 47%
+        );
+
+    cursor:pointer;
+
+    display:none;
+
+}
+
+/* WIN MESSAGE */
+
+.win-message{
+
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#000000aa;
+
+    z-index:2000;
+
+}
+
+.win-box{
+
+    text-align:center;
+
+    padding:40px;
+
+    border-radius:25px;
+
+    background:#12052b;
+
+    border:2px solid #00d9ff;
+
+    box-shadow:0 0 60px #7b2cff;
+
+    animation:winPop .5s ease;
+
+}
+
+@keyframes winPop{
+
+    from{
+
+        transform:scale(.3);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+.win-box h1{
+
+    font-size:45px;
+
+    color:#55ff9a;
+
+    margin-bottom:15px;
+
+}
+
+.info{
+
+    text-align:center;
+
+    color:#aaa;
+
+    margin:15px;
+
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .logo-big{
+
+        font-size:38px;
+
+    }
+
+    .title{
+
+        font-size:28px;
+
+    }
+
+    .game-screen{
+
+        padding:15px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- ==========================================
+     START SCREEN
+========================================== -->
+
+<div class="start-screen" id="startScreen">
+
+    <div class="start-box">
+
+        <div class="logo-big">
+
+            🌌 GALAXY
+            <span>HUB</span>
+
+        </div>
+
+        <div class="start-title">
+
+            🎮 GAME CENTER
+
+        </div>
+
+        <p class="start-text">
+
+            Welcome to Galaxy Game Hub!
+            <br>
+            Click START to enter the Play Zone.
+
+        </p>
+
+        <button
+            class="start-button"
+            onclick="startGameHub()"
+        >
+
+            🚀 START GAME
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     MAIN GAME HUB
+========================================== -->
+
+<div id="mainGame">
+
+
+<header>
+
+    <div class="logo">
+
+        🌌 GALAXY
+        <span>HUB</span>
+
+    </div>
+
+    <button
+        class="action-btn"
+        onclick="backToStart()"
+    >
+
+        ⏮ Start Screen
+
+    </button>
+
+</header>
+
+
+<div class="container">
+
+
+<h1 class="title">
+
+    🎮 PLAY ZONE
+
+</h1>
+
+
+<p class="subtitle">
+
+    Choose your game and start playing!
+
+</p>
+
+
+<!-- GAME MENU -->
+
+<div class="game-menu">
+
+
+<button
+    class="game-button"
+    onclick="openGame('snake')"
+>
+
+    <div class="game-icon">
+
+        🐍
+
+    </div>
+
+    <h3>
+
+        Snake Galaxy
+
+    </h3>
+
+    <p>
+
+        Use arrow keys
+
+    </p>
+
+</button>
+
+
+<button
+    class="game-button"
+    onclick="openGame('ttt')"
+>
+
+    <div class="game-icon">
+
+        ❌
+
+    </div>
+
+    <h3>
+
+        Tic Tac Toe
+
+    </h3>
+
+    <p>
+
+        Play with friends
+
+    </p>
+
+</button>
+
+
+<button
+    class="game-button"
+    onclick="openGame('reaction')"
+>
+
+    <div class="game-icon">
+
+        ⚡
+
+    </div>
+
+    <h3>
+
+        Reaction Rush
+
+    </h3>
+
+    <p>
+
+        Test your speed
+
+    </p>
+
+</button>
+
+
+<button
+    class="game-button"
+    onclick="openGame('quiz')"
+>
+
+    <div class="game-icon">
+
+        🧠
+
+    </div>
+
+    <h3>
+
+        Galaxy Quiz
+
+    </h3>
+
+    <p>
+
+        Answer questions
+
+    </p>
+
+</button>
+
+
+<button
+    class="game-button"
+    onclick="openGame('target')"
+>
+
+    <div class="game-icon">
+
+        🎯
+
+    </div>
+
+    <h3>
+
+        Target Hunter
+
+    </h3>
+
+    <p>
+
+        Hit targets quickly
+
+    </p>
+
+</button>
+
+
+</div>
+
+
+<!-- ==========================================
+     SNAKE GAME
+========================================== -->
+
+<section
+    class="game-screen"
+    id="snakeGame"
+>
+
+<div class="game-header">
+
+    <h2>
+
+        🐍 Snake Galaxy
+
+    </h2>
+
+    <button
+        class="close-btn"
+        onclick="closeGames()"
+    >
+
+        Close
+
+    </button>
+
+</div>
+
+
+<div class="score">
+
+    Score:
+
+    <span id="snakeScore">
+
+        0
+
+    </span>
+
+</div>
+
+
+<canvas
+    id="snakeCanvas"
+    width="500"
+    height="500"
+></canvas>
+
+
+<p class="info">
+
+    Use ↑ ↓ ← → arrow keys.
+
+</p>
+
+
+<button
+    class="action-btn"
+    onclick="startSnake()"
+>
+
+    ▶ Start / Restart
+
+</button>
+
+</section>
+
+
+<!-- ==========================================
+     TIC TAC TOE
+========================================== -->
+
+<section
+    class="game-screen"
+    id="tttGame"
+>
+
+<div class="game-header">
+
+    <h2>
+
+        ❌ Tic Tac Toe
+
+    </h2>
+
+    <button
+        class="close-btn"
+        onclick="closeGames()"
+    >
+
+        Close
+
+    </button>
+
+</div>
+
+
+<div
+    class="score"
+    id="tttStatus"
+>
+
+    Player X Turn
+
+</div>
+
+
+<div class="ttt-board">
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(0)"
+></button>
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(1)"
+></button>
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(2)"
+></button>
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(3)"
+></button>
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(4)"
+></button>
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(5)"
+></button>
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(6)"
+></button>
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(7)"
+></button>
+
+
+<button
+    class="ttt-cell"
+    onclick="tttMove(8)"
+></button>
+
+
+</div>
+
+
+<button
+    class="action-btn"
+    onclick="resetTTT()"
+>
+
+    🔄 New Game
+
+</button>
+
+</section>
+
+
+<!-- ==========================================
+     REACTION GAME
+========================================== -->
+
+<section
+    class="game-screen"
+    id="reactionGame"
+>
+
+<div class="game-header">
+
+    <h2>
+
+        ⚡ Reaction Rush
+
+    </h2>
+
+    <button
+        class="close-btn"
+        onclick="closeGames()"
+    >
+
+        Close
+
+    </button>
+
+</div>
+
+
+<div
+    class="reaction-box"
+    id="reactionBox"
+    onclick="reactionClick()"
+>
+
+    Click START below
+
+</div>
+
+
+<div class="score">
+
+    Time:
+
+    <span id="reactionScore">
+
+        -
+
+    </span>
+
+    ms
+
+</div>
+
+
+<button
+    class="action-btn"
+    onclick="startReaction()"
+>
+
+    ▶ START
+
+</button>
+
+</section>
+
+
+<!-- ==========================================
+     QUIZ
+========================================== -->
+
+<section
+    class="game-screen"
+    id="quizGame"
+>
+
+<div class="game-header">
+
+    <h2>
+
+        🧠 Galaxy Quiz
+
+    </h2>
+
+    <button
+        class="close-btn"
+        onclick="closeGames()"
+    >
+
+        Close
+
+    </button>
+
+</div>
+
+
+<div class="quiz-box">
+
+
+<div class="score">
+
+    Score:
+
+    <span id="quizScore">
+
+        0
+
+    </span>
+
+</div>
+
+
+<div
+    class="question"
+    id="quizQuestion"
+></div>
+
+
+<div
+    id="quizAnswers"
+></div>
+
+
+<button
+    class="action-btn"
+    onclick="startQuiz()"
+>
+
+    🔄 Restart Quiz
+
+</button>
+
+
+</div>
+
+</section>
+
+
+<!-- ==========================================
+     TARGET GAME
+========================================== -->
+
+<section
+    class="game-screen"
+    id="targetGame"
+>
+
+<div class="game-header">
+
+    <h2>
+
+        🎯 Target Hunter
+
+    </h2>
+
+    <button
+        class="close-btn"
+        onclick="closeGames()"
+    >
+
+        Close
+
+    </button>
+
+</div>
+
+
+<div class="score">
+
+    Score:
+
+    <span id="targetScore">
+
+        0
+
+    </span>
+
+</div>
+
+
+<div
+    class="target-area"
+    id="targetArea"
+>
+
+
+<div
+    class="target"
+    id="target"
+    onclick="hitTarget(event)"
+></div>
+
+
+</div>
+
+
+<button
+    class="action-btn"
+    onclick="startTargetGame()"
+>
+
+    ▶ START
+
+</button>
+
+</section>
+
+
+</div>
+
+</div>
+
+
+<!-- ==========================================
+     WIN SCREEN
+========================================== -->
+
+<div
+    class="win-message"
+    id="winMessage"
+>
+
+<div class="win-box">
+
+    <h1 id="winTitle">
+
+        🏆 YOU WIN!
+
+    </h1>
+
+    <p id="winText">
+
+        Great Job!
+
+    </p>
+
+    <button
+        class="action-btn"
+        onclick="closeWin()"
+    >
+
+        Continue Playing
+
+    </button>
+
+</div>
+
+</div>
+
+
+<script>
+
+
+/* ==========================================
+   START SCREEN
+========================================== */
+
+function startGameHub(){
+
+    document.getElementById("startScreen")
+        .style.display="none";
+
+    document.getElementById("mainGame")
+        .style.display="block";
+
+}
+
+
+/* ==========================================
+   BACK TO START
+========================================== */
+
+function backToStart(){
+
+    closeGames();
+
+    document.getElementById("mainGame")
+        .style.display="none";
+
+    document.getElementById("startScreen")
+        .style.display="flex";
+
+}
+
+
+/* ==========================================
+   GAME NAVIGATION
+========================================== */
+
+function openGame(game){
+
+    closeGames();
+
+    const screen =
+        document.getElementById(game+"Game");
+
+    if(screen){
+
+        screen.classList.add("active");
+
+        screen.scrollIntoView({
+            behavior:"smooth"
+        });
+
+    }
+
+
+    if(game==="ttt"){
+
+        resetTTT();
+
+    }
+
+
+    if(game==="quiz"){
+
+        startQuiz();
+
+    }
+
+}
+
+
+/* ==========================================
+   CLOSE GAMES
+========================================== */
+
+function closeGames(){
+
+    document
+        .querySelectorAll(".game-screen")
+        .forEach(
+            game=>{
+                game.classList.remove("active");
+            }
+        );
+
+    stopSnake();
+
+    stopTarget();
+
+}
+
+
+/* ==========================================
+   WIN SCREEN
+========================================== */
+
+function showWin(title,text){
+
+    document.getElementById("winTitle")
+        .textContent=title;
+
+    document.getElementById("winText")
+        .textContent=text;
+
+    document.getElementById("winMessage")
+        .style.display="flex";
+
+}
+
+
+function closeWin(){
+
+    document.getElementById("winMessage")
+        .style.display="none";
+
+}
+
+
+/* ==========================================
+   SOUND EFFECT
+========================================== */
+
+function playSound(type){
+
+    const audio =
+        new Audio();
+
+    if(type==="win"){
+
+        audio.src=
+        "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg";
+
+    }
+
+    else if(type==="lose"){
+
+        audio.src=
+        "https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg";
+
+    }
+
+    audio.volume=.5;
+
+    audio.play().catch(
+        ()=>{}
+    );
+
+}
+
+
+/* ==========================================
+   SNAKE GAME
+========================================== */
+
+const canvas=
+    document.getElementById("snakeCanvas");
+
+const ctx=
+    canvas.getContext("2d");
+
+const grid=25;
+
+let snake=[];
+
+let food={};
+
+let snakeDirection={
+    x:1,
+    y:0
+};
+
+let nextDirection={
+    x:1,
+    y:0
+};
+
+let snakeTimer=null;
+
+let snakeScore=0;
+
+
+function startSnake(){
+
+    clearInterval(snakeTimer);
+
+    snake=[
+        {x:10,y:10},
+        {x:9,y:10},
+        {x:8,y:10}
+    ];
+
+    snakeDirection={
+        x:1,
+        y:0
+    };
+
+    nextDirection={
+        x:1,
+        y:0
+    };
+
+    snakeScore=0;
+
+    document.getElementById("snakeScore")
+        .textContent=snakeScore;
+
+    createFood();
+
+    snakeTimer=
+        setInterval(
+            updateSnake,
+            110
+        );
+
+    drawSnake();
+
+}
+
+
+function stopSnake(){
+
+    clearInterval(snakeTimer);
+
+    snakeTimer=null;
+
+}
+
+
+function createFood(){
+
+    food={
+
+        x:Math.floor(
+            Math.random()*
+            (canvas.width/grid)
+        ),
+
+        y:Math.floor(
+            Math.random()*
+            (canvas.height/grid)
+        )
+
+    };
+
+}
+
+
+function updateSnake(){
+
+    snakeDirection=
+        nextDirection;
+
+    const head={
+
+        x:
+        snake[0].x+
+        snakeDirection.x,
+
+        y:
+        snake[0].y+
+        snakeDirection.y
+
+    };
+
+
+    const max=
+        canvas.width/grid;
+
+
+    if(
+
+        head.x<0 ||
+        head.x>=max ||
+        head.y<0 ||
+        head.y>=max
+
+    ){
+
+        snakeGameOver();
+
+        return;
+
+    }
+
+
+    for(let part of snake){
+
+        if(
+
+            head.x===part.x &&
+            head.y===part.y
+
+        ){
+
+            snakeGameOver();
+
+            return;
+
+        }
+
+    }
+
+
+    snake.unshift(head);
+
+
+    if(
+
+        head.x===food.x &&
+        head.y===food.y
+
+    ){
+
+        snakeScore+=10;
+
+        document.getElementById("snakeScore")
+            .textContent=snakeScore;
+
+        playSound("win");
+
+        createFood();
+
+    }
+
+    else{
+
+        snake.pop();
+
+    }
+
+
+    drawSnake();
+
+}
+
+
+function drawSnake(){
+
+    ctx.fillStyle="#020713";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    ctx.fillStyle="#ff3d71";
+
+    ctx.beginPath();
+
+    ctx.arc(
+
+        food.x*grid+grid/2,
+        food.y*grid+grid/2,
+        8,
+        0,
+        Math.PI*2
+
+    );
+
+    ctx.fill();
+
+
+    snake.forEach(
+        (part,index)=>{
+
+            ctx.fillStyle=
+                index===0
+                ?"cyan"
+                :"#7b2cff";
+
+            ctx.fillRect(
+
+                part.x*grid+2,
+                part.y*grid+2,
+                grid-4,
+                grid-4
+
+            );
+
+        }
+    );
+
+}
+
+
+function snakeGameOver(){
+
+    stopSnake();
+
+    playSound("lose");
+
+    setTimeout(
+
+        ()=>{
+
+            showWin(
+                "💥 GAME OVER!",
+                "Snake Score: "+snakeScore
+            );
+
+        },
+
+        100
+
+    );
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            event.key==="ArrowUp" &&
+            snakeDirection.y!==1
+        ){
+
+            nextDirection={
+                x:0,
+                y:-1
+            };
+
+        }
+
+
+        if(
+            event.key==="ArrowDown" &&
+            snakeDirection.y!==-1
+        ){
+
+            nextDirection={
+                x:0,
+                y:1
+            };
+
+        }
+
+
+        if(
+            event.key==="ArrowLeft" &&
+            snakeDirection.x!==1
+        ){
+
+            nextDirection={
+                x:-1,
+                y:0
+            };
+
+        }
+
+
+        if(
+            event.key==="ArrowRight" &&
+            snakeDirection.x!==-1
+        ){
+
+            nextDirection={
+                x:1,
+                y:0
+            };
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   TIC TAC TOE
+========================================== */
+
+let board=[
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+];
+
+let player="X";
+
+let tttOver=false;
+
+
+const wins=[
+
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+
+    [0,4,8],
+    [2,4,6]
+
+];
+
+
+function tttMove(index){
+
+    if(
+        board[index]!=="" ||
+        tttOver
+    ){
+
+        return;
+
+    }
+
+
+    board[index]=player;
+
+    renderTTT();
+
+
+    if(checkWinner()){
+
+        tttOver=true;
+
+        playSound("win");
+
+        showWin(
+            "🏆 "+player+" WINS!",
+            "Congratulations!"
+        );
+
+        document.getElementById("tttStatus")
+            .textContent=
+            "🏆 Player "+player+" Wins!";
+
+        return;
+
+    }
+
+
+    if(!board.includes("")){
+
+        tttOver=true;
+
+        playSound("lose");
+
+        showWin(
+            "🤝 DRAW!",
+            "Nobody won this round."
+        );
+
+        return;
+
+    }
+
+
+    player=
+        player==="X"
+        ?"O"
+        :"X";
+
+
+    document.getElementById("tttStatus")
+        .textContent=
+        "Player "+player+" Turn";
+
+}
+
+
+function renderTTT(){
+
+    document
+        .querySelectorAll(".ttt-cell")
+        .forEach(
+            (cell,index)=>{
+
+                cell.textContent=
+                    board[index];
+
+            }
+        );
+
+}
+
+
+function checkWinner(){
+
+    return wins.some(
+        line=>{
+
+            const [a,b,c]=line;
+
+            return(
+
+                board[a] &&
+                board[a]===board[b] &&
+                board[a]===board[c]
+
+            );
+
+        }
+    );
+
+}
+
+
+function resetTTT(){
+
+    board=[
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ];
+
+    player="X";
+
+    tttOver=false;
+
+    document.getElementById("tttStatus")
+        .textContent=
+        "Player X Turn";
+
+    renderTTT();
+
+}
+
+
+/* ==========================================
+   REACTION GAME
+========================================== */
+
+let reactionStart=0;
+
+let reactionTimer=null;
+
+let reactionWaiting=false;
+
+
+function startReaction(){
+
+    const box=
+        document.getElementById("reactionBox");
+
+    clearTimeout(reactionTimer);
+
+    reactionWaiting=true;
+
+    reactionStart=0;
+
+    box.className=
+        "reaction-box wait";
+
+    box.textContent=
+        "🔴 WAIT...";
+
+
+    const delay=
+        1500+
+        Math.random()*3000;
+
+
+    reactionTimer=
+        setTimeout(
+            ()=>{
+
+                reactionWaiting=false;
+
+                reactionStart=
+                    performance.now();
+
+                box.className=
+                    "reaction-box ready";
+
+                box.textContent=
+                    "🟢 CLICK NOW!";
+
+            },
+            delay
+        );
+
+}
+
+
+function reactionClick(){
+
+    const box=
+        document.getElementById("reactionBox");
+
+
+    if(reactionWaiting){
+
+        clearTimeout(reactionTimer);
+
+        reactionWaiting=false;
+
+        box.className=
+            "reaction-box";
+
+        box.textContent=
+            "❌ TOO EARLY!";
+
+        playSound("lose");
+
+        return;
+
+    }
+
+
+    if(reactionStart===0){
+
+        return;
+
+    }
+
+
+    const time=
+        Math.round(
+            performance.now()-
+            reactionStart
+        );
+
+
+    document.getElementById("reactionScore")
+        .textContent=time;
+
+
+    box.className=
+        "reaction-box";
+
+    box.textContent=
+        "⚡ "+time+" ms";
+
+
+    reactionStart=0;
+
+    playSound("win");
+
+}
+
+
+/* ==========================================
+   QUIZ GAME
+========================================== */
+
+const questions=[
+
+    {
+
+        q:"Which language styles a web page?",
+
+        a:[
+            "HTML",
+            "CSS",
+            "Python",
+            "C"
+        ],
+
+        correct:1
+
+    },
+
+
+    {
+
+        q:"Which language creates web page structure?",
+
+        a:[
+            "HTML",
+            "Java",
+            "Python",
+            "SQL"
+        ],
+
+        correct:0
+
+    },
+
+
+    {
+
+        q:"What does CPU stand for?",
+
+        a:[
+            "Computer Personal Unit",
+            "Central Processing Unit",
+            "Computer Program Unit",
+            "Central Program User"
+        ],
+
+        correct:1
+
+    },
+
+
+    {
+
+        q:"Which is a programming language?",
+
+        a:[
+            "Keyboard",
+            "Python",
+            "Monitor",
+            "Mouse"
+        ],
+
+        correct:1
+
+    }
+
+];
+
+
+let quizIndex=0;
+
+let quizScore=0;
+
+
+function startQuiz(){
+
+    quizIndex=0;
+
+    quizScore=0;
+
+    document.getElementById("quizScore")
+        .textContent=0;
+
+    showQuestion();
+
+}
+
+
+function showQuestion(){
+
+    if(
+        quizIndex>=questions.length
+    ){
+
+        playSound("win");
+
+        showWin(
+            "🎉 QUIZ COMPLETE!",
+            "Score: "+
+            quizScore+
+            "/"+
+            questions.length
+        );
+
+        return;
+
+    }
+
+
+    const q=
+        questions[quizIndex];
+
+
+    document.getElementById("quizQuestion")
+        .textContent=
+        (quizIndex+1)+
+        ". "+
+        q.q;
+
+
+    const area=
+        document.getElementById("quizAnswers");
+
+
+    area.innerHTML="";
+
+
+    q.a.forEach(
+        (answer,index)=>{
+
+            const button=
+                document.createElement(
+                    "button"
+                );
+
+            button.className="answer";
+
+            button.textContent=answer;
+
+            button.onclick=
+                ()=>{
+                    answerQuestion(index);
+                };
+
+            area.appendChild(button);
+
+        }
+    );
+
+}
+
+
+function answerQuestion(index){
+
+    const q=
+        questions[quizIndex];
+
+
+    if(index===q.correct){
+
+        quizScore++;
+
+        playSound("win");
+
+    }
+
+    else{
+
+        playSound("lose");
+
+    }
+
+
+    document.getElementById("quizScore")
+        .textContent=quizScore;
+
+
+    quizIndex++;
+
+    showQuestion();
+
+}
+
+
+/* ==========================================
+   TARGET HUNTER
+========================================== */
+
+let targetScore=0;
+
+let targetTimer=null;
+
+
+function startTargetGame(){
+
+    stopTarget();
+
+    targetScore=0;
+
+    document.getElementById("targetScore")
+        .textContent=0;
+
+
+    const target=
+        document.getElementById("target");
+
+    target.style.display="block";
+
+    moveTarget();
+
+
+    targetTimer=
+        setTimeout(
+            ()=>{
+
+                stopTarget();
+
+                playSound("lose");
+
+                showWin(
+                    "⏰ TIME UP!",
+                    "Targets Hit: "+targetScore
+                );
+
+            },
+            30000
+        );
+
+}
+
+
+function moveTarget(){
+
+    const area=
+        document.getElementById("targetArea");
+
+    const target=
+        document.getElementById("target");
+
+
+    const maxX=
+        area.clientWidth-
+        target.offsetWidth;
+
+
+    const maxY=
+        area.clientHeight-
+        target.offsetHeight;
+
+
+    target.style.left=
+        Math.random()*maxX+
+        "px";
+
+
+    target.style.top=
+        Math.random()*maxY+
+        "px";
+
+}
+
+
+function hitTarget(event){
+
+    event.stopPropagation();
+
+    targetScore++;
+
+    document.getElementById("targetScore")
+        .textContent=
+        targetScore;
+
+    playSound("win");
+
+    moveTarget();
+
+}
+
+
+function stopTarget(){
+
+    clearTimeout(targetTimer);
+
+    targetTimer=null;
+
+    const target=
+        document.getElementById("target");
+
+
+    if(target){
+
+        target.style.display="none";
+
+    }
+
+}
+
+
+</script>
+
+</body>
+</html>
+```
+
+

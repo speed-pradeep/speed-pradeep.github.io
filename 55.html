@@ -1,0 +1,3884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Galaxy Game Hub</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial,sans-serif;
+    color:white;
+    background:
+    radial-gradient(circle at 20% 20%,#42127a,transparent 35%),
+    radial-gradient(circle at 80% 70%,#064b70,transparent 35%),
+    #03000d;
+}
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:
+    radial-gradient(2px 2px at 20% 30%,white,transparent),
+    radial-gradient(1px 1px at 40% 70%,white,transparent),
+    radial-gradient(2px 2px at 70% 20%,white,transparent),
+    radial-gradient(1px 1px at 90% 80%,white,transparent);
+    background-size:300px 250px;
+    opacity:.5;
+}
+
+header{
+    height:70px;
+    padding:0 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#050014dd;
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid #ffffff20;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#00d9ff;
+}
+
+.home-btn,
+.close-btn,
+.start-btn{
+    border:0;
+    border-radius:12px;
+    color:white;
+    cursor:pointer;
+}
+
+.home-btn{
+    padding:10px 18px;
+    background:#ffffff12;
+    border:1px solid #ffffff20;
+}
+
+.container{
+    width:92%;
+    max-width:1300px;
+    margin:auto;
+    padding:50px 0 100px;
+}
+
+.title{
+    text-align:center;
+    font-size:45px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#aaa;
+    margin-bottom:35px;
+}
+
+.search{
+    display:block;
+    width:100%;
+    max-width:600px;
+    margin:0 auto 30px;
+    padding:15px 20px;
+    border-radius:15px;
+    border:1px solid #ffffff20;
+    background:#ffffff0c;
+    color:white;
+    outline:none;
+    font-size:16px;
+}
+
+.categories{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+.category{
+    padding:10px 18px;
+    border:1px solid #ffffff20;
+    border-radius:20px;
+    background:#ffffff0b;
+    color:white;
+    cursor:pointer;
+}
+
+.category:hover{
+    background:#7b2cff55;
+}
+
+.game-menu{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(190px,1fr));
+    gap:18px;
+}
+
+.game-button{
+    min-height:175px;
+    padding:20px;
+    border:1px solid #ffffff18;
+    border-radius:20px;
+    background:#ffffff09;
+    color:white;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.game-button:hover{
+    transform:translateY(-7px);
+    border-color:#7b2cff;
+    box-shadow:0 15px 40px #7b2cff35;
+}
+
+.game-icon{
+    font-size:50px;
+    margin-bottom:12px;
+}
+
+.game-button h3{
+    margin-bottom:7px;
+}
+
+.game-button p{
+    color:#999;
+    font-size:13px;
+}
+
+/* BIG GAME WINDOW */
+
+.game-screen{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:500;
+    overflow:auto;
+    padding:25px;
+    background:
+    radial-gradient(circle at center,#171044,#02000a);
+}
+
+.game-screen.active{
+    display:block;
+}
+
+.game-top{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.game-title{
+    font-size:30px;
+}
+
+.close-btn{
+    padding:11px 18px;
+    background:#ff315f;
+}
+
+.start-btn{
+    display:block;
+    margin:25px auto;
+    padding:14px 30px;
+    background:linear-gradient(90deg,#7b2cff,#00c8ff);
+    font-size:17px;
+}
+
+.score{
+    text-align:center;
+    margin:18px;
+    font-size:21px;
+}
+
+canvas{
+    display:block;
+    margin:20px auto;
+    max-width:95%;
+    border-radius:15px;
+}
+
+/* SNAKE */
+
+#snakeCanvas{
+    background:#020713;
+    border:2px solid #00d9ff;
+}
+
+/* TTT */
+
+.ttt-board{
+    width:420px;
+    max-width:95%;
+    margin:30px auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.ttt-cell{
+    height:120px;
+    border:1px solid #7b2cff;
+    border-radius:15px;
+    background:#ffffff08;
+    color:white;
+    font-size:50px;
+    cursor:pointer;
+}
+
+/* REACTION */
+
+.reaction-box{
+    width:700px;
+    max-width:95%;
+    height:400px;
+    margin:40px auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:25px;
+    background:#35105d;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.reaction-box.wait{
+    background:#701e25;
+}
+
+.reaction-box.ready{
+    background:#126b38;
+}
+
+/* TARGET */
+
+.target-area{
+    width:900px;
+    max-width:95%;
+    height:500px;
+    margin:30px auto;
+    position:relative;
+    overflow:hidden;
+    border:2px solid #ffffff20;
+    border-radius:20px;
+    background:#020713;
+}
+
+.target{
+    width:65px;
+    height:65px;
+    position:absolute;
+    border-radius:50%;
+    display:none;
+    cursor:pointer;
+    background:
+    radial-gradient(circle,
+    white 10%,
+    red 12%,
+    red 35%,
+    white 37%,
+    white 50%,
+    red 52%);
+}
+
+/* QUIZ */
+
+.quiz{
+    width:700px;
+    max-width:95%;
+    margin:40px auto;
+}
+
+.question{
+    font-size:25px;
+    margin-bottom:20px;
+}
+
+.answer{
+    width:100%;
+    display:block;
+    padding:15px;
+    margin:10px 0;
+    border:1px solid #ffffff20;
+    border-radius:12px;
+    background:#ffffff09;
+    color:white;
+    text-align:left;
+    cursor:pointer;
+}
+
+.answer:hover{
+    background:#7b2cff40;
+}
+
+/* BRICK BREAKER */
+
+#brickCanvas{
+    background:#020713;
+    border:2px solid #00d9ff;
+}
+
+/* PONG */
+
+#pongCanvas{
+    background:#000;
+    border:2px solid #7b2cff;
+}
+
+/* SPACE SHOOTER */
+
+#spaceCanvas{
+    background:#000;
+    border:2px solid #00d9ff;
+}
+
+/* MEMORY */
+
+.memory-board{
+    width:650px;
+    max-width:95%;
+    margin:30px auto;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+
+.memory-card{
+    height:120px;
+    border:1px solid #7b2cff;
+    border-radius:15px;
+    background:#ffffff08;
+    color:white;
+    font-size:35px;
+    cursor:pointer;
+}
+
+/* 2048 */
+
+.board2048{
+    width:430px;
+    max-width:95%;
+    margin:30px auto;
+    padding:10px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    background:#ffffff15;
+    border-radius:15px;
+}
+
+.tile2048{
+    height:90px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:10px;
+    background:#ffffff10;
+    font-size:25px;
+    font-weight:bold;
+}
+
+/* NUMBER */
+
+.number-box{
+    text-align:center;
+    margin:80px auto;
+}
+
+.number-input{
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #ffffff20;
+    background:#ffffff10;
+    color:white;
+    font-size:18px;
+}
+
+/* RPS */
+
+.rps-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin:50px auto;
+}
+
+.rps-btn{
+    width:150px;
+    height:120px;
+    border:1px solid #ffffff20;
+    border-radius:20px;
+    background:#ffffff09;
+    color:white;
+    font-size:40px;
+    cursor:pointer;
+}
+
+/* COIN */
+
+.coin-area{
+    width:800px;
+    max-width:95%;
+    height:450px;
+    margin:30px auto;
+    position:relative;
+    overflow:hidden;
+    border:2px solid #ffffff20;
+    border-radius:20px;
+    background:#020713;
+}
+
+.coin{
+    position:absolute;
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:gold;
+    color:#4b3000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:25px;
+    cursor:pointer;
+}
+
+/* DODGE */
+
+.dodge-area{
+    width:800px;
+    max-width:95%;
+    height:450px;
+    margin:30px auto;
+    position:relative;
+    overflow:hidden;
+    border:2px solid #ffffff20;
+    background:#020713;
+}
+
+.player{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    width:55px;
+    height:55px;
+    border-radius:10px;
+    background:#00d9ff;
+}
+
+.enemy{
+    position:absolute;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#ff315f;
+}
+
+/* ADVENTURE */
+
+.adventure-area{
+    width:800px;
+    max-width:95%;
+    height:450px;
+    margin:30px auto;
+    position:relative;
+    overflow:hidden;
+    border:2px solid #7b2cff;
+    border-radius:20px;
+    background:
+    radial-gradient(circle at 30% 30%,#30105c,transparent 30%),
+    #020713;
+}
+
+.hero{
+    position:absolute;
+    width:45px;
+    height:45px;
+    background:#00eaff;
+    border-radius:10px;
+}
+
+.star{
+    position:absolute;
+    font-size:35px;
+    cursor:pointer;
+}
+
+@media(max-width:600px){
+
+    .title{
+        font-size:30px;
+    }
+
+    .game-title{
+        font-size:22px;
+    }
+
+    .memory-card{
+        height:80px;
+    }
+
+    .ttt-cell{
+        height:90px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🌌 GALAXY <span>HUB</span>
+</div>
+
+<button class="home-btn" onclick="closeGames()">
+🏠 Home
+</button>
+
+</header>
+
+<div class="container">
+
+<h1 class="title">
+🎮 GALAXY PLAY ZONE
+</h1>
+
+<p class="subtitle">
+Choose a game and enter the big-screen game mode
+</p>
+
+<input
+class="search"
+id="gameSearch"
+placeholder="🔎 Search games..."
+oninput="searchGames()">
+
+<div class="categories">
+
+<button class="category"
+onclick="filterGames('all')">
+All
+</button>
+
+<button class="category"
+onclick="filterGames('arcade')">
+Arcade
+</button>
+
+<button class="category"
+onclick="filterGames('puzzle')">
+Puzzle
+</button>
+
+<button class="category"
+onclick="filterGames('action')">
+Action
+</button>
+
+<button class="category"
+onclick="filterGames('classic')">
+Classic
+</button>
+
+</div>
+
+<div class="game-menu" id="gameMenu">
+
+<!-- 1 -->
+
+<button class="game-button"
+data-category="classic"
+onclick="openGame('snake')">
+
+<div class="game-icon">🐍</div>
+<h3>Snake Galaxy</h3>
+<p>Classic snake game</p>
+
+</button>
+
+<!-- 2 -->
+
+<button class="game-button"
+data-category="classic"
+onclick="openGame('ttt')">
+
+<div class="game-icon">❌</div>
+<h3>Tic Tac Toe</h3>
+<p>2 players</p>
+
+</button>
+
+<!-- 3 -->
+
+<button class="game-button"
+data-category="arcade"
+onclick="openGame('reaction')">
+
+<div class="game-icon">⚡</div>
+<h3>Reaction Rush</h3>
+<p>Test your speed</p>
+
+</button>
+
+<!-- 4 -->
+
+<button class="game-button"
+data-category="arcade"
+onclick="openGame('target')">
+
+<div class="game-icon">🎯</div>
+<h3>Target Hunter</h3>
+<p>Hit the targets</p>
+
+</button>
+
+<!-- 5 -->
+
+<button class="game-button"
+data-category="puzzle"
+onclick="openGame('quiz')">
+
+<div class="game-icon">🧠</div>
+<h3>Galaxy Quiz</h3>
+<p>Answer questions</p>
+
+</button>
+
+<!-- 6 -->
+
+<button class="game-button"
+data-category="arcade"
+onclick="openGame('clicker')">
+
+<div class="game-icon">🖱️</div>
+<h3>Fast Clicker</h3>
+<p>Click quickly</p>
+
+</button>
+
+<!-- 7 -->
+
+<button class="game-button"
+data-category="arcade"
+onclick="openGame('brick')">
+
+<div class="game-icon">🧱</div>
+<h3>Brick Breaker</h3>
+<p>Destroy every brick</p>
+
+</button>
+
+<!-- 8 -->
+
+<button class="game-button"
+data-category="classic"
+onclick="openGame('pong')">
+
+<div class="game-icon">🏓</div>
+<h3>Pong Battle</h3>
+<p>Classic paddle battle</p>
+
+</button>
+
+<!-- 9 -->
+
+<button class="game-button"
+data-category="action"
+onclick="openGame('space')">
+
+<div class="game-icon">🚀</div>
+<h3>Space Shooter</h3>
+<p>Destroy enemies</p>
+
+</button>
+
+<!-- 10 -->
+
+<button class="game-button"
+data-category="puzzle"
+onclick="openGame('memory')">
+
+<div class="game-icon">🧩</div>
+<h3>Memory Match</h3>
+<p>Find matching cards</p>
+
+</button>
+
+<!-- 11 -->
+
+<button class="game-button"
+data-category="puzzle"
+onclick="openGame('2048')">
+
+<div class="game-icon">🔢</div>
+<h3>2048</h3>
+<p>Combine numbers</p>
+
+</button>
+
+<!-- 12 -->
+
+<button class="game-button"
+data-category="puzzle"
+onclick="openGame('number')">
+
+<div class="game-icon">🔮</div>
+<h3>Number Guess</h3>
+<p>Guess the number</p>
+
+</button>
+
+<!-- 13 -->
+
+<button class="game-button"
+data-category="classic"
+onclick="openGame('rps')">
+
+<div class="game-icon">✂️</div>
+<h3>Rock Paper Scissors</h3>
+<p>Battle the computer</p>
+
+</button>
+
+<!-- 14 -->
+
+<button class="game-button"
+data-category="arcade"
+onclick="openGame('coin')">
+
+<div class="game-icon">🪙</div>
+<h3>Coin Collector</h3>
+<p>Collect coins</p>
+
+</button>
+
+<!-- 15 -->
+
+<button class="game-button"
+data-category="action"
+onclick="openGame('dodge')">
+
+<div class="game-icon">💥</div>
+<h3>Dodge Master</h3>
+<p>Avoid falling enemies</p>
+
+</button>
+
+<!-- 16 -->
+
+<button class="game-button"
+data-category="action"
+onclick="openGame('adventure')">
+
+<div class="game-icon">🌌</div>
+<h3>Galaxy Adventure</h3>
+<p>Explore the galaxy</p>
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ==================================================
+SNAKE
+================================================== -->
+
+<section class="game-screen" id="snakeGame">
+
+<div class="game-top">
+
+<h2 class="game-title">🐍 Snake Galaxy</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+Score:
+<span id="snakeScore">0</span>
+</div>
+
+<canvas
+id="snakeCanvas"
+width="500"
+height="500">
+</canvas>
+
+<button class="start-btn"
+onclick="startSnake()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+TIC TAC TOE
+================================================== -->
+
+<section class="game-screen" id="tttGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+❌ Tic Tac Toe
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score"
+id="tttStatus">
+Click START
+</div>
+
+<div class="ttt-board">
+
+<button class="ttt-cell"
+onclick="tttMove(0)">
+</button>
+
+<button class="ttt-cell"
+onclick="tttMove(1)">
+</button>
+
+<button class="ttt-cell"
+onclick="tttMove(2)">
+</button>
+
+<button class="ttt-cell"
+onclick="tttMove(3)">
+</button>
+
+<button class="ttt-cell"
+onclick="tttMove(4)">
+</button>
+
+<button class="ttt-cell"
+onclick="tttMove(5)">
+</button>
+
+<button class="ttt-cell"
+onclick="tttMove(6)">
+</button>
+
+<button class="ttt-cell"
+onclick="tttMove(7)">
+</button>
+
+<button class="ttt-cell"
+onclick="tttMove(8)">
+</button>
+
+</div>
+
+<button class="start-btn"
+onclick="startTTT()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+REACTION
+================================================== -->
+
+<section class="game-screen"
+id="reactionGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+⚡ Reaction Rush
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="reaction-box"
+id="reactionBox">
+
+Click START
+
+</div>
+
+<div class="score">
+
+Time:
+<span id="reactionScore">-</span>
+ms
+
+</div>
+
+<button class="start-btn"
+onclick="startReaction()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+TARGET
+================================================== -->
+
+<section class="game-screen"
+id="targetGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🎯 Target Hunter
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Score:
+<span id="targetScore">0</span>
+
+</div>
+
+<div class="target-area"
+id="targetArea">
+
+<div class="target"
+id="target"
+onclick="hitTarget(event)">
+</div>
+
+</div>
+
+<button class="start-btn"
+onclick="startTarget()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+QUIZ
+================================================== -->
+
+<section class="game-screen"
+id="quizGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🧠 Galaxy Quiz
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="quiz">
+
+<div class="score">
+
+Score:
+<span id="quizScore">0</span>
+
+</div>
+
+<div class="question"
+id="quizQuestion">
+
+Click START
+
+</div>
+
+<div id="quizAnswers"></div>
+
+<button class="start-btn"
+onclick="startQuiz()">
+▶ START QUIZ
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==================================================
+FAST CLICKER
+================================================== -->
+
+<section class="game-screen"
+id="clickerGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🖱️ Fast Clicker
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Clicks:
+<span id="clickScore">0</span>
+
+</div>
+
+<div class="reaction-box"
+id="clickBox">
+
+Click START
+
+</div>
+
+<button class="start-btn"
+onclick="startClicker()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+BRICK BREAKER
+================================================== -->
+
+<section class="game-screen"
+id="brickGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🧱 Brick Breaker
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Score:
+<span id="brickScore">0</span>
+
+&nbsp;&nbsp;
+
+Lives:
+<span id="brickLives">3</span>
+
+</div>
+
+<canvas
+id="brickCanvas"
+width="800"
+height="500">
+</canvas>
+
+<button class="start-btn"
+onclick="startBrick()">
+▶ START GAME
+</button>
+
+<p style="text-align:center;color:#aaa">
+Use ← → or A / D to move the paddle
+</p>
+
+</section>
+
+
+<!-- ==================================================
+PONG
+================================================== -->
+
+<section class="game-screen"
+id="pongGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🏓 Pong Battle
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Player:
+<span id="pongPlayer">0</span>
+
+&nbsp;&nbsp;
+
+Computer:
+<span id="pongComputer">0</span>
+
+</div>
+
+<canvas
+id="pongCanvas"
+width="800"
+height="500">
+</canvas>
+
+<button class="start-btn"
+onclick="startPong()">
+▶ START GAME
+</button>
+
+<p style="text-align:center;color:#aaa">
+Move your paddle with W/S or ↑/↓
+</p>
+
+</section>
+
+
+<!-- ==================================================
+SPACE SHOOTER
+================================================== -->
+
+<section class="game-screen"
+id="spaceGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🚀 Space Shooter
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Score:
+<span id="spaceScore">0</span>
+
+</div>
+
+<canvas
+id="spaceCanvas"
+width="800"
+height="500">
+</canvas>
+
+<button class="start-btn"
+onclick="startSpace()">
+▶ START GAME
+</button>
+
+<p style="text-align:center;color:#aaa">
+Use ← → to move and SPACE to shoot
+</p>
+
+</section>
+
+
+<!-- ==================================================
+MEMORY
+================================================== -->
+
+<section class="game-screen"
+id="memoryGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🧩 Memory Match
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Moves:
+<span id="memoryMoves">0</span>
+
+</div>
+
+<div class="memory-board"
+id="memoryBoard">
+</div>
+
+<button class="start-btn"
+onclick="startMemory()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+2048
+================================================== -->
+
+<section class="game-screen"
+id="2048Game">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🔢 2048
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Score:
+<span id="score2048">0</span>
+
+</div>
+
+<div class="board2048"
+id="board2048">
+</div>
+
+<button class="start-btn"
+onclick="start2048()">
+▶ START GAME
+</button>
+
+<p style="text-align:center;color:#aaa">
+Use arrow keys
+</p>
+
+</section>
+
+
+<!-- ==================================================
+NUMBER GUESS
+================================================== -->
+
+<section class="game-screen"
+id="numberGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🔮 Number Guess
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="number-box">
+
+<h2 id="numberMessage">
+Click START
+</h2>
+
+<br>
+
+<input
+class="number-input"
+id="numberInput"
+type="number"
+min="1"
+max="100"
+placeholder="1 - 100">
+
+<br>
+
+<button
+class="start-btn"
+onclick="startNumber()">
+▶ START GAME
+</button>
+
+<button
+class="start-btn"
+onclick="guessNumber()">
+GUESS
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==================================================
+ROCK PAPER SCISSORS
+================================================== -->
+
+<section class="game-screen"
+id="rpsGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+✂️ Rock Paper Scissors
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score"
+id="rpsResult">
+Click START
+</div>
+
+<div class="rps-buttons">
+
+<button class="rps-btn"
+onclick="playRPS('rock')">
+✊
+</button>
+
+<button class="rps-btn"
+onclick="playRPS('paper')">
+✋
+</button>
+
+<button class="rps-btn"
+onclick="playRPS('scissors')">
+✌️
+</button>
+
+</div>
+
+<button class="start-btn"
+onclick="startRPS()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+COIN COLLECTOR
+================================================== -->
+
+<section class="game-screen"
+id="coinGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🪙 Coin Collector
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Coins:
+<span id="coinScore">0</span>
+
+</div>
+
+<div class="coin-area"
+id="coinArea">
+
+<div class="coin"
+id="coin">
+🪙
+</div>
+
+</div>
+
+<button class="start-btn"
+onclick="startCoin()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+DODGE MASTER
+================================================== -->
+
+<section class="game-screen"
+id="dodgeGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+💥 Dodge Master
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Score:
+<span id="dodgeScore">0</span>
+
+</div>
+
+<div class="dodge-area"
+id="dodgeArea">
+
+<div class="player"
+id="dodgePlayer">
+</div>
+
+</div>
+
+<button class="start-btn"
+onclick="startDodge()">
+▶ START GAME
+</button>
+
+</section>
+
+
+<!-- ==================================================
+GALAXY ADVENTURE
+================================================== -->
+
+<section class="game-screen"
+id="adventureGame">
+
+<div class="game-top">
+
+<h2 class="game-title">
+🌌 Galaxy Adventure
+</h2>
+
+<button class="close-btn"
+onclick="closeGames()">
+✕ Close
+</button>
+
+</div>
+
+<div class="score">
+
+Stars:
+<span id="adventureScore">0</span>
+
+</div>
+
+<div class="adventure-area"
+id="adventureArea">
+
+<div class="hero"
+id="hero">
+</div>
+
+<div class="star"
+id="adventureStar">
+⭐
+</div>
+
+</div>
+
+<button class="start-btn"
+onclick="startAdventure()">
+▶ START GAME
+</button>
+
+<p style="text-align:center;color:#aaa">
+Use arrow keys to explore
+</p>
+
+</section>
+
+
+<script>
+
+/* ==================================================
+NAVIGATION
+================================================== */
+
+function openGame(game){
+
+    closeGames();
+
+    const screen=
+    document.getElementById(game+"Game");
+
+    if(screen){
+
+        screen.classList.add("active");
+
+    }
+
+}
+
+function closeGames(){
+
+    document
+    .querySelectorAll(".game-screen")
+    .forEach(function(screen){
+
+        screen.classList.remove("active");
+
+    });
+
+    stopSnake();
+    stopBrick();
+    stopPong();
+    stopSpace();
+    stopTarget();
+    stopCoin();
+    stopDodge();
+
+}
+
+
+/* ==================================================
+SEARCH
+================================================== */
+
+function searchGames(){
+
+    const value=
+    document
+    .getElementById("gameSearch")
+    .value
+    .toLowerCase();
+
+    document
+    .querySelectorAll(".game-button")
+    .forEach(function(game){
+
+        game.style.display=
+        game.innerText
+        .toLowerCase()
+        .includes(value)
+        ?"block"
+        :"none";
+
+    });
+
+}
+
+function filterGames(category){
+
+    document
+    .querySelectorAll(".game-button")
+    .forEach(function(game){
+
+        if(
+            category==="all" ||
+            game.dataset.category===category
+        ){
+
+            game.style.display="block";
+
+        }else{
+
+            game.style.display="none";
+
+        }
+
+    });
+
+}
+
+
+/* ==================================================
+SNAKE
+================================================== */
+
+const snakeCanvas=
+document.getElementById("snakeCanvas");
+
+const snakeCtx=
+snakeCanvas.getContext("2d");
+
+let snake=[];
+let snakeFood={};
+let snakeDir={x:1,y:0};
+let snakeNext={x:1,y:0};
+let snakeTimer=null;
+let snakePoints=0;
+
+function startSnake(){
+
+    stopSnake();
+
+    snake=[
+        {x:10,y:10},
+        {x:9,y:10},
+        {x:8,y:10}
+    ];
+
+    snakeDir={x:1,y:0};
+    snakeNext={x:1,y:0};
+    snakePoints=0;
+
+    document
+    .getElementById("snakeScore")
+    .textContent=0;
+
+    makeSnakeFood();
+
+    drawSnake();
+
+    snakeTimer=
+    setInterval(updateSnake,110);
+
+}
+
+function stopSnake(){
+
+    clearInterval(snakeTimer);
+
+}
+
+function makeSnakeFood(){
+
+    snakeFood={
+
+        x:Math.floor(Math.random()*20),
+
+        y:Math.floor(Math.random()*20)
+
+    };
+
+}
+
+function updateSnake(){
+
+    snakeDir=snakeNext;
+
+    const head={
+
+        x:snake[0].x+snakeDir.x,
+
+        y:snake[0].y+snakeDir.y
+
+    };
+
+    if(
+        head.x<0||
+        head.x>=20||
+        head.y<0||
+        head.y>=20
+    ){
+
+        stopSnake();
+
+        alert(
+            "🐍 GAME OVER!\nScore: "+
+            snakePoints
+        );
+
+        return;
+
+    }
+
+    for(const part of snake){
+
+        if(
+            head.x===part.x &&
+            head.y===part.y
+        ){
+
+            stopSnake();
+
+            alert(
+                "🐍 GAME OVER!\nScore: "+
+                snakePoints
+            );
+
+            return;
+
+        }
+
+    }
+
+    snake.unshift(head);
+
+    if(
+        head.x===snakeFood.x &&
+        head.y===snakeFood.y
+    ){
+
+        snakePoints+=10;
+
+        document
+        .getElementById("snakeScore")
+        .textContent=snakePoints;
+
+        makeSnakeFood();
+
+    }else{
+
+        snake.pop();
+
+    }
+
+    drawSnake();
+
+}
+
+function drawSnake(){
+
+    snakeCtx.fillStyle="#020713";
+
+    snakeCtx.fillRect(
+        0,0,500,500
+    );
+
+    snakeCtx.fillStyle="#ff315f";
+
+    snakeCtx.beginPath();
+
+    snakeCtx.arc(
+        snakeFood.x*25+12,
+        snakeFood.y*25+12,
+        8,0,Math.PI*2
+    );
+
+    snakeCtx.fill();
+
+    snake.forEach(function(part,i){
+
+        snakeCtx.fillStyle=
+        i===0
+        ?"cyan"
+        :"purple";
+
+        snakeCtx.fillRect(
+            part.x*25+2,
+            part.y*25+2,
+            21,21
+        );
+
+    });
+
+}
+
+document.addEventListener(
+"keydown",
+function(e){
+
+    if(
+        e.key==="ArrowUp" &&
+        snakeDir.y!==1
+    )
+        snakeNext={x:0,y:-1};
+
+    if(
+        e.key==="ArrowDown" &&
+        snakeDir.y!==-1
+    )
+        snakeNext={x:0,y:1};
+
+    if(
+        e.key==="ArrowLeft" &&
+        snakeDir.x!==1
+    )
+        snakeNext={x:-1,y:0};
+
+    if(
+        e.key==="ArrowRight" &&
+        snakeDir.x!==-1
+    )
+        snakeNext={x:1,y:0};
+
+});
+
+
+/* ==================================================
+TIC TAC TOE
+================================================== */
+
+let tttBoard=[];
+let tttPlayer="X";
+let tttRunning=false;
+
+const tttWins=[
+[0,1,2],
+[3,4,5],
+[6,7,8],
+[0,3,6],
+[1,4,7],
+[2,5,8],
+[0,4,8],
+[2,4,6]
+];
+
+function startTTT(){
+
+    tttBoard=[
+        "","","",
+        "","","",
+        "","",""
+    ];
+
+    tttPlayer="X";
+    tttRunning=true;
+
+    document
+    .getElementById("tttStatus")
+    .textContent="Player X Turn";
+
+    renderTTT();
+
+}
+
+function tttMove(i){
+
+    if(
+        !tttRunning||
+        tttBoard[i]
+    )
+        return;
+
+    tttBoard[i]=tttPlayer;
+
+    renderTTT();
+
+    if(checkTTT()){
+
+        tttRunning=false;
+
+        document
+        .getElementById("tttStatus")
+        .textContent=
+        "🏆 Player "+tttPlayer+" Wins!";
+
+        return;
+
+    }
+
+    if(!tttBoard.includes("")){
+
+        tttRunning=false;
+
+        document
+        .getElementById("tttStatus")
+        .textContent="🤝 DRAW!";
+
+        return;
+
+    }
+
+    tttPlayer=
+    tttPlayer==="X"?"O":"X";
+
+    document
+    .getElementById("tttStatus")
+    .textContent=
+    "Player "+tttPlayer+" Turn";
+
+}
+
+function renderTTT(){
+
+    document
+    .querySelectorAll(".ttt-cell")
+    .forEach(function(cell,i){
+
+        cell.textContent=
+        tttBoard[i]||"";
+
+    });
+
+}
+
+function checkTTT(){
+
+    return tttWins.some(function(w){
+
+        return(
+            tttBoard[w[0]] &&
+            tttBoard[w[0]]===tttBoard[w[1]] &&
+            tttBoard[w[0]]===tttBoard[w[2]]
+        );
+
+    });
+
+}
+
+
+/* ==================================================
+REACTION
+================================================== */
+
+let reactionTimer=null;
+let reactionStart=0;
+let reactionWaiting=false;
+
+function startReaction(){
+
+    const box=
+    document.getElementById("reactionBox");
+
+    clearTimeout(reactionTimer);
+
+    reactionWaiting=true;
+    reactionStart=0;
+
+    box.className="reaction-box wait";
+    box.textContent="WAIT...";
+
+    reactionTimer=
+    setTimeout(function(){
+
+        reactionWaiting=false;
+
+        reactionStart=
+        performance.now();
+
+        box.className=
+        "reaction-box ready";
+
+        box.textContent=
+        "🟢 CLICK NOW!";
+
+    },1500+Math.random()*3000);
+
+}
+
+document
+.getElementById("reactionBox")
+.onclick=function(){
+
+    const box=this;
+
+    if(reactionWaiting){
+
+        clearTimeout(reactionTimer);
+
+        reactionWaiting=false;
+
+        box.className="reaction-box";
+
+        box.textContent="❌ TOO EARLY!";
+
+        return;
+
+    }
+
+    if(!reactionStart)
+        return;
+
+    const time=
+    Math.round(
+        performance.now()-reactionStart
+    );
+
+    document
+    .getElementById("reactionScore")
+    .textContent=time;
+
+    box.className="reaction-box";
+
+    box.textContent=
+    "⚡ "+time+" ms";
+
+    reactionStart=0;
+
+};
+
+
+/* ==================================================
+TARGET
+================================================== */
+
+let targetScore=0;
+let targetTimer=null;
+
+function startTarget(){
+
+    stopTarget();
+
+    targetScore=0;
+
+    document
+    .getElementById("targetScore")
+    .textContent=0;
+
+    document
+    .getElementById("target")
+    .style.display="block";
+
+    moveTarget();
+
+    targetTimer=
+    setTimeout(function(){
+
+        stopTarget();
+
+        alert(
+            "🎯 TIME UP!\nScore: "+
+            targetScore
+        );
+
+    },30000);
+
+}
+
+function moveTarget(){
+
+    const area=
+    document.getElementById("targetArea");
+
+    const target=
+    document.getElementById("target");
+
+    target.style.left=
+    Math.random()*
+    (area.clientWidth-65)+"px";
+
+    target.style.top=
+    Math.random()*
+    (area.clientHeight-65)+"px";
+
+}
+
+function hitTarget(e){
+
+    e.stopPropagation();
+
+    targetScore++;
+
+    document
+    .getElementById("targetScore")
+    .textContent=targetScore;
+
+    moveTarget();
+
+}
+
+function stopTarget(){
+
+    clearTimeout(targetTimer);
+
+    const target=
+    document.getElementById("target");
+
+    if(target)
+        target.style.display="none";
+
+}
+
+
+/* ==================================================
+QUIZ
+================================================== */
+
+const questions=[
+
+{
+q:"Which language styles a webpage?",
+a:["HTML","CSS","Python","C"],
+c:1
+},
+
+{
+q:"Which language creates webpage structure?",
+a:["HTML","Java","SQL","C++"],
+c:0
+},
+
+{
+q:"What does CPU stand for?",
+a:[
+"Central Processing Unit",
+"Computer Power Unit",
+"Central Program User",
+"Computer Personal Unit"
+],
+c:0
+},
+
+{
+q:"Which is a programming language?",
+a:[
+"Python",
+"Keyboard",
+"Monitor",
+"Mouse"
+],
+c:0
+},
+
+{
+q:"Which one is used for styling?",
+a:[
+"CSS",
+"CPU",
+"RAM",
+"HTML"
+],
+c:0
+}
+
+];
+
+let quizIndex=0;
+let quizScore=0;
+
+function startQuiz(){
+
+    quizIndex=0;
+    quizScore=0;
+
+    document
+    .getElementById("quizScore")
+    .textContent=0;
+
+    showQuestion();
+
+}
+
+function showQuestion(){
+
+    if(quizIndex>=questions.length){
+
+        document
+        .getElementById("quizQuestion")
+        .textContent="🎉 QUIZ COMPLETE!";
+
+        document
+        .getElementById("quizAnswers")
+        .innerHTML=
+        "<h2 style='text-align:center'>"+
+        quizScore+
+        " / "+
+        questions.length+
+        "</h2>";
+
+        return;
+
+    }
+
+    const q=questions[quizIndex];
+
+    document
+    .getElementById("quizQuestion")
+    .textContent=
+    (quizIndex+1)+". "+q.q;
+
+    const area=
+    document.getElementById("quizAnswers");
+
+    area.innerHTML="";
+
+    q.a.forEach(function(answer,i){
+
+        const button=
+        document.createElement("button");
+
+        button.className="answer";
+
+        button.textContent=answer;
+
+        button.onclick=function(){
+
+            if(i===q.c)
+                quizScore++;
+
+            document
+            .getElementById("quizScore")
+            .textContent=quizScore;
+
+            quizIndex++;
+
+            showQuestion();
+
+        };
+
+        area.appendChild(button);
+
+    });
+
+}
+
+
+/* ==================================================
+FAST CLICKER
+================================================== */
+
+let clickScore=0;
+let clickRunning=false;
+let clickTimer=null;
+
+function startClicker(){
+
+    clickScore=0;
+    clickRunning=true;
+
+    document
+    .getElementById("clickScore")
+    .textContent=0;
+
+    document
+    .getElementById("clickBox")
+    .textContent=
+    "CLICK FAST!";
+
+    clearTimeout(clickTimer);
+
+    clickTimer=
+    setTimeout(function(){
+
+        clickRunning=false;
+
+        document
+        .getElementById("clickBox")
+        .textContent="⏰ TIME UP!";
+
+        alert(
+            "🖱️ SCORE: "+
+            clickScore
+        );
+
+    },10000);
+
+}
+
+document
+.getElementById("clickBox")
+.onclick=function(){
+
+    if(!clickRunning)
+        return;
+
+    clickScore++;
+
+    document
+    .getElementById("clickScore")
+    .textContent=clickScore;
+
+};
+
+
+/* ==================================================
+BRICK BREAKER
+================================================== */
+
+const brickCanvas=
+document.getElementById("brickCanvas");
+
+const brickCtx=
+brickCanvas.getContext("2d");
+
+let brickAnimation=null;
+
+let ballX;
+let ballY;
+let ballDX;
+let ballDY;
+let paddleX;
+let bricks=[];
+let brickScore=0;
+let brickLives=3;
+
+function createBricks(){
+
+    bricks=[];
+
+    for(let r=0;r<5;r++){
+
+        for(let c=0;c<10;c++){
+
+            bricks.push({
+
+                x:45+c*72,
+                y:50+r*28,
+                width:60,
+                height:18,
+                alive:true
+
+            });
+
+        }
+
+    }
+
+}
+
+function startBrick(){
+
+    stopBrick();
+
+    ballX=400;
+    ballY=400;
+
+    ballDX=4;
+    ballDY=-4;
+
+    paddleX=350;
+
+    brickScore=0;
+    brickLives=3;
+
+    document
+    .getElementById("brickScore")
+    .textContent=0;
+
+    document
+    .getElementById("brickLives")
+    .textContent=3;
+
+    createBricks();
+
+    brickLoop();
+
+}
+
+function stopBrick(){
+
+    cancelAnimationFrame(brickAnimation);
+
+}
+
+function brickLoop(){
+
+    brickCtx.clearRect(
+        0,0,800,500
+    );
+
+    /* bricks */
+
+    bricks.forEach(function(b){
+
+        if(!b.alive)
+            return;
+
+        brickCtx.fillStyle="#7b2cff";
+
+        brickCtx.fillRect(
+            b.x,b.y,
+            b.width,b.height
+        );
+
+    });
+
+    /* paddle */
+
+    brickCtx.fillStyle="#00d9ff";
+
+    brickCtx.fillRect(
+        paddleX,
+        465,
+        100,
+        15
+    );
+
+    /* ball */
+
+    brickCtx.beginPath();
+
+    brickCtx.arc(
+        ballX,
+        ballY,
+        8,
+        0,
+        Math.PI*2
+    );
+
+    brickCtx.fillStyle="white";
+
+    brickCtx.fill();
+
+
+    ballX+=ballDX;
+    ballY+=ballDY;
+
+
+    if(
+        ballX<8||
+        ballX>792
+    ){
+
+        ballDX*=-1;
+
+    }
+
+
+    if(ballY<8){
+
+        ballDY*=-1;
+
+    }
+
+
+    if(
+        ballY>455 &&
+        ballX>paddleX &&
+        ballX<paddleX+100
+    ){
+
+        ballDY=-Math.abs(ballDY);
+
+    }
+
+
+    if(ballY>510){
+
+        brickLives--;
+
+        document
+        .getElementById("brickLives")
+        .textContent=brickLives;
+
+        if(brickLives<=0){
+
+            stopBrick();
+
+            alert(
+                "🧱 GAME OVER!\nScore: "+
+                brickScore
+            );
+
+            return;
+
+        }
+
+        ballX=400;
+        ballY=400;
+        ballDY=-4;
+
+    }
+
+
+    bricks.forEach(function(b){
+
+        if(
+            b.alive &&
+            ballX>b.x &&
+            ballX<b.x+b.width &&
+            ballY>b.y &&
+            ballY<b.y+b.height
+        ){
+
+            b.alive=false;
+
+            ballDY*=-1;
+
+            brickScore+=10;
+
+            document
+            .getElementById("brickScore")
+            .textContent=brickScore;
+
+        }
+
+    });
+
+
+    if(
+        bricks.every(
+            b=>!b.alive
+        )
+    ){
+
+        stopBrick();
+
+        alert(
+            "🏆 YOU WIN!\nScore: "+
+            brickScore
+        );
+
+        return;
+
+    }
+
+    brickAnimation=
+    requestAnimationFrame(brickLoop);
+
+}
+
+document.addEventListener(
+"keydown",
+function(e){
+
+    if(
+        e.key==="ArrowLeft" ||
+        e.key.toLowerCase()==="a"
+    ){
+
+        paddleX-=30;
+
+    }
+
+    if(
+        e.key==="ArrowRight" ||
+        e.key.toLowerCase()==="d"
+    ){
+
+        paddleX+=30;
+
+    }
+
+    paddleX=
+    Math.max(
+        0,
+        Math.min(700,paddleX)
+    );
+
+});
+
+
+/* ==================================================
+PONG
+================================================== */
+
+const pongCanvas=
+document.getElementById("pongCanvas");
+
+const pongCtx=
+pongCanvas.getContext("2d");
+
+let pongAnimation=null;
+
+let pongBall={
+    x:400,
+    y:250,
+    dx:5,
+    dy:3
+};
+
+let pongPlayerY=200;
+let pongComputerY=200;
+
+let pongPlayerScore=0;
+let pongComputerScore=0;
+
+function startPong(){
+
+    stopPong();
+
+    pongPlayerScore=0;
+    pongComputerScore=0;
+
+    resetPongBall();
+
+    pongLoop();
+
+}
+
+function stopPong(){
+
+    cancelAnimationFrame(pongAnimation);
+
+}
+
+function resetPongBall(){
+
+    pongBall={
+        x:400,
+        y:250,
+        dx:Math.random()>0.5?5:-5,
+        dy:3
+    };
+
+}
+
+function pongLoop(){
+
+    pongCtx.fillStyle="#000";
+
+    pongCtx.fillRect(
+        0,0,800,500
+    );
+
+    pongCtx.fillStyle="white";
+
+    pongCtx.fillRect(
+        20,
+        pongPlayerY,
+        15,
+        100
+    );
+
+    pongCtx.fillRect(
+        765,
+        pongComputerY,
+        15,
+        100
+    );
+
+    pongCtx.beginPath();
+
+    pongCtx.arc(
+        pongBall.x,
+        pongBall.y,
+        10,
+        0,
+        Math.PI*2
+    );
+
+    pongCtx.fill();
+
+
+    pongBall.x+=pongBall.dx;
+    pongBall.y+=pongBall.dy;
+
+
+    if(
+        pongBall.y<10||
+        pongBall.y>490
+    ){
+
+        pongBall.dy*=-1;
+
+    }
+
+
+    if(
+        pongBall.x<35 &&
+        pongBall.y>pongPlayerY &&
+        pongBall.y<pongPlayerY+100
+    ){
+
+        pongBall.dx=Math.abs(pongBall.dx);
+
+    }
+
+
+    if(
+        pongBall.x>750 &&
+        pongBall.y>pongComputerY &&
+        pongBall.y<pongComputerY+100
+    ){
+
+        pongBall.dx=-Math.abs(pongBall.dx);
+
+    }
+
+
+    pongComputerY+=
+    (pongBall.y-50-pongComputerY)*0.05;
+
+
+    if(pongBall.x<0){
+
+        pongComputerScore++;
+
+        updatePongScore();
+
+        resetPongBall();
+
+    }
+
+
+    if(pongBall.x>800){
+
+        pongPlayerScore++;
+
+        updatePongScore();
+
+        resetPongBall();
+
+    }
+
+
+    if(
+        pongPlayerScore>=5||
+        pongComputerScore>=5
+    ){
+
+        stopPong();
+
+        alert(
+            pongPlayerScore>=5
+            ?"🏆 YOU WIN!"
+            :"❌ COMPUTER WINS!"
+        );
+
+        return;
+
+    }
+
+    pongAnimation=
+    requestAnimationFrame(pongLoop);
+
+}
+
+function updatePongScore(){
+
+    document
+    .getElementById("pongPlayer")
+    .textContent=pongPlayerScore;
+
+    document
+    .getElementById("pongComputer")
+    .textContent=pongComputerScore;
+
+}
+
+document.addEventListener(
+"keydown",
+function(e){
+
+    if(
+        e.key==="ArrowUp"||
+        e.key.toLowerCase()==="w"
+    )
+        pongPlayerY-=25;
+
+    if(
+        e.key==="ArrowDown"||
+        e.key.toLowerCase()==="s"
+    )
+        pongPlayerY+=25;
+
+    pongPlayerY=
+    Math.max(
+        0,
+        Math.min(400,pongPlayerY)
+    );
+
+});
+
+
+/* ==================================================
+SPACE SHOOTER
+================================================== */
+
+const spaceCanvas=
+document.getElementById("spaceCanvas");
+
+const spaceCtx=
+spaceCanvas.getContext("2d");
+
+let spaceAnimation=null;
+let spaceRunning=false;
+let spaceBullets=[];
+let spaceEnemies=[];
+let spaceScore=0;
+let spacePlayerX=380;
+
+function startSpace(){
+
+    stopSpace();
+
+    spaceBullets=[];
+    spaceEnemies=[];
+    spaceScore=0;
+    spacePlayerX=380;
+    spaceRunning=true;
+
+    document
+    .getElementById("spaceScore")
+    .textContent=0;
+
+    for(let i=0;i<8;i++){
+
+        spaceEnemies.push({
+
+            x:50+i*100,
+            y:50,
+            size:30
+
+        });
+
+    }
+
+    spaceLoop();
+
+}
+
+function stopSpace(){
+
+    spaceRunning=false;
+
+    cancelAnimationFrame(spaceAnimation);
+
+}
+
+function spaceLoop(){
+
+    if(!spaceRunning)
+        return;
+
+    spaceCtx.fillStyle="#000";
+
+    spaceCtx.fillRect(
+        0,0,800,500
+    );
+
+    /* player */
+
+    spaceCtx.fillStyle="#00eaff";
+
+    spaceCtx.fillRect(
+        spacePlayerX,
+        450,
+        50,
+        25
+    );
+
+    /* bullets */
+
+    spaceBullets.forEach(function(b){
+
+        b.y-=8;
+
+        spaceCtx.fillStyle="yellow";
+
+        spaceCtx.fillRect(
+            b.x,
+            b.y,
+            5,
+            15
+        );
+
+    });
+
+    /* enemies */
+
+    spaceEnemies.forEach(function(e){
+
+        spaceCtx.fillStyle="#ff315f";
+
+        spaceCtx.beginPath();
+
+        spaceCtx.arc(
+            e.x,
+            e.y,
+            e.size/2,
+            0,
+            Math.PI*2
+        );
+
+        spaceCtx.fill();
+
+    });
+
+
+    spaceBullets.forEach(function(b){
+
+        spaceEnemies.forEach(function(e){
+
+            if(
+                Math.abs(b.x-e.x)<25 &&
+                Math.abs(b.y-e.y)<25
+            ){
+
+                e.y=-100;
+
+                b.y=-100;
+
+                spaceScore+=10;
+
+                document
+                .getElementById("spaceScore")
+                .textContent=spaceScore;
+
+            }
+
+        });
+
+    });
+
+
+    if(
+        spaceEnemies.every(
+            e=>e.y<0
+        )
+    ){
+
+        stopSpace();
+
+        alert(
+            "🚀 YOU WIN!\nScore: "+
+            spaceScore
+        );
+
+        return;
+
+    }
+
+
+    spaceAnimation=
+    requestAnimationFrame(spaceLoop);
+
+}
+
+document.addEventListener(
+"keydown",
+function(e){
+
+    if(e.key==="ArrowLeft")
+        spacePlayerX-=25;
+
+    if(e.key==="ArrowRight")
+        spacePlayerX+=25;
+
+    spacePlayerX=
+    Math.max(
+        0,
+        Math.min(750,spacePlayerX)
+    );
+
+    if(
+        e.code==="Space" &&
+        spaceRunning
+    ){
+
+        spaceBullets.push({
+
+            x:spacePlayerX+22,
+            y:440
+
+        });
+
+    }
+
+});
+
+
+/* ==================================================
+MEMORY MATCH
+================================================== */
+
+let memoryFirst=null;
+let memoryLock=false;
+let memoryMatches=0;
+let memoryMoves=0;
+
+const memorySymbols=[
+"🚀","🚀",
+"🌟","🌟",
+"👾","👾",
+"🪐","🪐",
+"🎮","🎮",
+"💎","💎",
+"🔥","🔥",
+"⭐","⭐"
+];
+
+function startMemory(){
+
+    memoryFirst=null;
+    memoryLock=false;
+    memoryMatches=0;
+    memoryMoves=0;
+
+    document
+    .getElementById("memoryMoves")
+    .textContent=0;
+
+    const board=
+    document.getElementById("memoryBoard");
+
+    board.innerHTML="";
+
+    memorySymbols
+    .sort(()=>Math.random()-0.5)
+    .forEach(function(symbol){
+
+        const card=
+        document.createElement("button");
+
+        card.className="memory-card";
+
+        card.textContent="❓";
+
+        card.dataset.symbol=symbol;
+
+        card.onclick=function(){
+
+            memoryFlip(card);
+
+        };
+
+        board.appendChild(card);
+
+    });
+
+}
+
+function memoryFlip(card){
+
+    if(
+        memoryLock||
+        card.textContent!=="❓"
+    )
+        return;
+
+    card.textContent=
+    card.dataset.symbol;
+
+    if(!memoryFirst){
+
+        memoryFirst=card;
+
+        return;
+
+    }
+
+    memoryMoves++;
+
+    document
+    .getElementById("memoryMoves")
+    .textContent=memoryMoves;
+
+    if(
+        memoryFirst.dataset.symbol===
+        card.dataset.symbol
+    ){
+
+        memoryFirst=null;
+
+        memoryMatches++;
+
+        if(memoryMatches===8){
+
+            setTimeout(function(){
+
+                alert(
+                    "🧩 YOU WIN!\nMoves: "+
+                    memoryMoves
+                );
+
+            },300);
+
+        }
+
+    }else{
+
+        memoryLock=true;
+
+        setTimeout(function(){
+
+            memoryFirst.textContent="❓";
+
+            card.textContent="❓";
+
+            memoryFirst=null;
+
+            memoryLock=false;
+
+        },700);
+
+    }
+
+}
+
+
+/* ==================================================
+2048
+================================================== */
+
+let game2048=[];
+let score2048=0;
+
+function start2048(){
+
+    game2048=
+    Array.from(
+        {length:4},
+        ()=>Array(4).fill(0)
+    );
+
+    score2048=0;
+
+    add2048();
+    add2048();
+
+    draw2048();
+
+}
+
+function add2048(){
+
+    const empty=[];
+
+    for(let r=0;r<4;r++){
+
+        for(let c=0;c<4;c++){
+
+            if(game2048[r][c]===0)
+                empty.push([r,c]);
+
+        }
+
+    }
+
+    if(!empty.length)
+        return;
+
+    const pos=
+    empty[
+        Math.floor(
+            Math.random()*empty.length
+        )
+    ];
+
+    game2048[pos[0]][pos[1]]=
+    Math.random()<0.9?2:4;
+
+}
+
+function draw2048(){
+
+    const board=
+    document.getElementById("board2048");
+
+    board.innerHTML="";
+
+    game2048.forEach(function(row){
+
+        row.forEach(function(value){
+
+            const tile=
+            document.createElement("div");
+
+            tile.className="tile2048";
+
+            tile.textContent=
+            value||"";
+
+            board.appendChild(tile);
+
+        });
+
+    });
+
+    document
+    .getElementById("score2048")
+    .textContent=score2048;
+
+}
+
+function move2048(direction){
+
+    let moved=false;
+
+    for(let r=0;r<4;r++){
+
+        let line;
+
+        if(
+            direction==="left"||
+            direction==="right"
+        ){
+
+            line=
+            game2048[r].slice();
+
+        }else{
+
+            line=
+            game2048.map(
+                row=>row[r]
+            );
+
+        }
+
+        if(
+            direction==="right"||
+            direction==="down"
+        ){
+
+            line.reverse();
+
+        }
+
+        const old=line.join(",");
+
+        line=line.filter(x=>x!==0);
+
+        for(
+            let i=0;
+            i<line.length-1;
+            i++
+        ){
+
+            if(line[i]===line[i+1]){
+
+                line[i]*=2;
+
+                score2048+=line[i];
+
+                line.splice(i+1,1);
+
+            }
+
+        }
+
+        while(line.length<4)
+            line.push(0);
+
+        if(
+            direction==="right"||
+            direction==="down"
+        ){
+
+            line.reverse();
+
+        }
+
+        if(
+            line.join(",")!==old
+        )
+            moved=true;
+
+        if(
+            direction==="left"||
+            direction==="right"
+        ){
+
+            game2048[r]=line;
+
+        }else{
+
+            line.forEach(
+                (value,i)=>{
+                    game2048[i][r]=value;
+                }
+            );
+
+        }
+
+    }
+
+    if(moved)
+        add2048();
+
+    draw2048();
+
+}
+
+document.addEventListener(
+"keydown",
+function(e){
+
+    if(
+        document
+        .getElementById("2048Game")
+        .classList.contains("active")
+    ){
+
+        if(e.key==="ArrowLeft")
+            move2048("left");
+
+        if(e.key==="ArrowRight")
+            move2048("right");
+
+        if(e.key==="ArrowUp")
+            move2048("up");
+
+        if(e.key==="ArrowDown")
+            move2048("down");
+
+    }
+
+});
+
+
+/* ==================================================
+NUMBER GUESS
+================================================== */
+
+let secretNumber=0;
+
+function startNumber(){
+
+    secretNumber=
+    Math.floor(
+        Math.random()*100
+    )+1;
+
+    document
+    .getElementById("numberMessage")
+    .textContent=
+    "Guess a number from 1 to 100";
+
+}
+
+function guessNumber(){
+
+    if(!secretNumber){
+
+        alert("Click START first!");
+
+        return;
+
+    }
+
+    const guess=
+    Number(
+        document
+        .getElementById("numberInput")
+        .value
+    );
+
+    if(guess===secretNumber){
+
+        document
+        .getElementById("numberMessage")
+        .textContent=
+        "🏆 CORRECT!";
+
+        secretNumber=0;
+
+    }else if(guess<secretNumber){
+
+        document
+        .getElementById("numberMessage")
+        .textContent=
+        "⬆️ Try a higher number";
+
+    }else{
+
+        document
+        .getElementById("numberMessage")
+        .textContent=
+        "⬇️ Try a lower number";
+
+    }
+
+}
+
+
+/* ==================================================
+ROCK PAPER SCISSORS
+================================================== */
+
+let rpsRunning=false;
+
+function startRPS(){
+
+    rpsRunning=true;
+
+    document
+    .getElementById("rpsResult")
+    .textContent=
+    "Choose Rock, Paper or Scissors";
+
+}
+
+function playRPS(player){
+
+    if(!rpsRunning){
+
+        alert("Click START first!");
+
+        return;
+
+    }
+
+    const choices=[
+        "rock",
+        "paper",
+        "scissors"
+    ];
+
+    const computer=
+    choices[
+        Math.floor(
+            Math.random()*3
+        )
+    ];
+
+    let result;
+
+    if(player===computer){
+
+        result="🤝 DRAW!";
+
+    }else if(
+
+        player==="rock" &&
+        computer==="scissors"
+
+        ||
+
+        player==="paper" &&
+        computer==="rock"
+
+        ||
+
+        player==="scissors" &&
+        computer==="paper"
+
+    ){
+
+        result=
+        "🏆 YOU WIN!";
+
+    }else{
+
+        result=
+        "❌ COMPUTER WINS!";
+
+    }
+
+    document
+    .getElementById("rpsResult")
+    .textContent=
+    "You: "+player+
+    " | Computer: "+computer+
+    " | "+result;
+
+}
+
+
+/* ==================================================
+COIN COLLECTOR
+================================================== */
+
+let coinScore=0;
+let coinTimer=null;
+let coinRunning=false;
+
+function startCoin(){
+
+    stopCoin();
+
+    coinScore=0;
+    coinRunning=true;
+
+    document
+    .getElementById("coinScore")
+    .textContent=0;
+
+    moveCoin();
+
+    coinTimer=
+    setTimeout(function(){
+
+        stopCoin();
+
+        alert(
+            "🪙 TIME UP!\nCoins: "+
+            coinScore
+        );
+
+    },30000);
+
+}
+
+function moveCoin(){
+
+    const area=
+    document.getElementById("coinArea");
+
+    const coin=
+    document.getElementById("coin");
+
+    coin.style.left=
+    Math.random()*
+    (area.clientWidth-45)+"px";
+
+    coin.style.top=
+    Math.random()*
+    (area.clientHeight-45)+"px";
+
+}
+
+document
+.getElementById("coin")
+.onclick=function(){
+
+    if(!coinRunning)
+        return;
+
+    coinScore++;
+
+    document
+    .getElementById("coinScore")
+    .textContent=coinScore;
+
+    moveCoin();
+
+};
+
+function stopCoin(){
+
+    clearTimeout(coinTimer);
+
+    coinRunning=false;
+
+}
+
+
+/* ==================================================
+DODGE MASTER
+================================================== */
+
+let dodgeRunning=false;
+let dodgeTimer=null;
+let dodgeScore=0;
+let dodgeX=370;
+
+function startDodge(){
+
+    stopDodge();
+
+    dodgeRunning=true;
+    dodgeScore=0;
+    dodgeX=370;
+
+    document
+    .getElementById("dodgeScore")
+    .textContent=0;
+
+    dodgeLoop();
+
+}
+
+function stopDodge(){
+
+    dodgeRunning=false;
+
+    clearTimeout(dodgeTimer);
+
+}
+
+function dodgeLoop(){
+
+    if(!dodgeRunning)
+        return;
+
+    const area=
+    document.getElementById("dodgeArea");
+
+    const enemy=
+    document.createElement("div");
+
+    enemy.className="enemy";
+
+    enemy.style.left=
+    Math.random()*
+    (area.clientWidth-40)+"px";
+
+    enemy.style.top="-40px";
+
+    area.appendChild(enemy);
+
+    let y=-40;
+
+    const timer=
+    setInterval(function(){
+
+        if(!dodgeRunning){
+
+            clearInterval(timer);
+
+            enemy.remove();
+
+            return;
+
+        }
+
+        y+=5;
+
+        enemy.style.top=y+"px";
+
+        const player=
+        document.getElementById(
+            "dodgePlayer"
+        );
+
+        const px=
+        dodgeX;
+
+        const ex=
+        parseFloat(enemy.style.left);
+
+        if(
+            y>380 &&
+            ex<px+55 &&
+            ex+40>px
+        ){
+
+            clearInterval(timer);
+
+            stopDodge();
+
+            alert(
+                "💥 GAME OVER!\nScore: "+
+                dodgeScore
+            );
+
+            return;
+
+        }
+
+        if(y>450){
+
+            clearInterval(timer);
+
+            enemy.remove();
+
+            dodgeScore++;
+
+            document
+            .getElementById("dodgeScore")
+            .textContent=dodgeScore;
+
+        }
+
+    },30);
+
+    dodgeTimer=
+    setTimeout(
+        dodgeLoop,
+        700
+    );
+
+}
+
+document.addEventListener(
+"keydown",
+function(e){
+
+    if(
+        document
+        .getElementById("dodgeGame")
+        .classList.contains("active")
+    ){
+
+        if(e.key==="ArrowLeft")
+            dodgeX-=25;
+
+        if(e.key==="ArrowRight")
+            dodgeX+=25;
+
+        dodgeX=
+        Math.max(
+            0,
+            Math.min(745,dodgeX)
+        );
+
+        document
+        .getElementById("dodgePlayer")
+        .style.left=
+        dodgeX+"px";
+
+    }
+
+});
+
+
+/* ==================================================
+GALAXY ADVENTURE
+================================================== */
+
+let adventureRunning=false;
+let adventureScore=0;
+let heroX=100;
+let heroY=200;
+
+function startAdventure(){
+
+    adventureRunning=true;
+    adventureScore=0;
+
+    heroX=100;
+    heroY=200;
+
+    document
+    .getElementById("adventureScore")
+    .textContent=0;
+
+    moveAdventureStar();
+
+    updateHero();
+
+}
+
+function updateHero(){
+
+    const hero=
+    document.getElementById("hero");
+
+    hero.style.left=
+    heroX+"px";
+
+    hero.style.top=
+    heroY+"px";
+
+}
+
+function moveAdventureStar(){
+
+    const area=
+    document.getElementById(
+        "adventureArea"
+    );
+
+    const star=
+    document.getElementById(
+        "adventureStar"
+    );
+
+    star.style.left=
+    Math.random()*
+    (area.clientWidth-40)+"px";
+
+    star.style.top=
+    Math.random()*
+    (area.clientHeight-40)+"px";
+
+}
+
+document
+.getElementById("adventureStar")
+.onclick=function(){
+
+    if(!adventureRunning)
+        return;
+
+    adventureScore++;
+
+    document
+    .getElementById("adventureScore")
+    .textContent=
+    adventureScore;
+
+    if(adventureScore>=10){
+
+        adventureRunning=false;
+
+        alert(
+            "🌌 ADVENTURE COMPLETE!\n"+
+            "Stars: "+adventureScore
+        );
+
+        return;
+
+    }
+
+    moveAdventureStar();
+
+};
+
+document.addEventListener(
+"keydown",
+function(e){
+
+    if(!adventureRunning)
+        return;
+
+    if(
+        !document
+        .getElementById("adventureGame")
+        .classList.contains("active")
+    )
+        return;
+
+    if(e.key==="ArrowLeft")
+        heroX-=15;
+
+    if(e.key==="ArrowRight")
+        heroX+=15;
+
+    if(e.key==="ArrowUp")
+        heroY-=15;
+
+    if(e.key==="ArrowDown")
+        heroY+=15;
+
+    heroX=
+    Math.max(
+        0,
+        Math.min(755,heroX)
+    );
+
+    heroY=
+    Math.max(
+        0,
+        Math.min(405,heroY)
+    );
+
+    updateHero();
+
+});
+
+</script>
+
+</body>
+</html>

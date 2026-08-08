@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Galaxy Racing Game</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at 20% 20%,#32106b,transparent 35%),
+        radial-gradient(circle at 80% 70%,#063c61,transparent 35%),
+        #03000d;
+    color:white;
+    font-family:Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+.game-wrapper{
+    width:100%;
+    max-width:900px;
+    text-align:center;
+}
+
+h1{
+    font-size:36px;
+    margin-bottom:10px;
+    color:#00eaff;
+    text-shadow:0 0 20px #00eaff;
+}
+
+.info{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    margin-bottom:15px;
+    font-size:20px;
+}
+
+#gameCanvas{
+    width:500px;
+    max-width:95vw;
+    height:auto;
+    background:#111;
+    border:3px solid #00eaff;
+    border-radius:15px;
+    box-shadow:
+        0 0 20px #00eaff,
+        0 0 60px #7b2cff;
+}
+
+.controls{
+    margin-top:15px;
+    color:#aaa;
+}
+
+button{
+    margin-top:15px;
+    padding:13px 28px;
+    border:0;
+    border-radius:12px;
+    background:linear-gradient(90deg,#7b2cff,#00bfff);
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+#message{
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,.75);
+    z-index:10;
+}
+
+.message-box{
+    padding:35px;
+    border-radius:20px;
+    background:#10052b;
+    border:2px solid #00eaff;
+    box-shadow:0 0 40px #00eaff;
+}
+
+.message-box h2{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.win{
+    color:#55ff9a;
+}
+
+.lose{
+    color:#ff3d71;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="game-wrapper">
+
+    <h1>🏎️ GALAXY RACING</h1>
+
+    <div class="info">
+
+        <div>
+            🏆 Score:
+            <span id="score">0</span>
+        </div>
+
+        <div>
+            ⚡ Speed:
+            <span id="speed">1</span>
+        </div>
+
+    </div>
+
+    <canvas
+        id="gameCanvas"
+        width="500"
+        height="700">
+    </canvas>
+
+    <div class="controls">
+        ⬅️ Left &nbsp;&nbsp; ➡️ Right
+        <br>
+        Avoid the enemy cars!
+    </div>
+
+    <button onclick="startGame()">
+        ▶ START RACE
+    </button>
+
+</div>
+
+
+<div id="message">
+
+    <div class="message-box">
+
+        <h2 id="resultTitle">
+            GAME OVER
+        </h2>
+
+        <p id="resultText">
+            Your Score: 0
+        </p>
+
+        <button onclick="startGame()">
+            🔄 PLAY AGAIN
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   CANVAS
+========================================= */
+
+const canvas =
+    document.getElementById("gameCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+
+/* =========================================
+   GAME VARIABLES
+========================================= */
+
+let gameRunning = false;
+
+let animationId = null;
+
+let score = 0;
+
+let roadSpeed = 5;
+
+let roadOffset = 0;
+
+let enemyTimer = 0;
+
+let keys = {};
+
+let enemies = [];
+
+
+/* =========================================
+   PLAYER CAR
+========================================= */
+
+const player = {
+
+    x:225,
+
+    y:590,
+
+    width:50,
+
+    height:90,
+
+    speed:7
+
+};
+
+
+/* =========================================
+   SOUND SYSTEM
+========================================= */
+
+const AudioContext =
+    window.AudioContext ||
+    window.webkitAudioContext;
+
+let audioCtx;
+
+
+function sound(
+    frequency,
+    duration,
+    type="sine"
+){
+
+    if(!AudioContext){
+        return;
+    }
+
+    if(!audioCtx){
+        audioCtx = new AudioContext();
+    }
+
+    const oscillator =
+        audioCtx.createOscillator();
+
+    const gain =
+        audioCtx.createGain();
+
+    oscillator.type = type;
+
+    oscillator.frequency.value =
+        frequency;
+
+    gain.gain.setValueAtTime(
+        0.15,
+        audioCtx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioCtx.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(audioCtx.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioCtx.currentTime + duration
+    );
+}
+
+
+function startSound(){
+
+    sound(500,.1);
+
+    setTimeout(()=>{
+        sound(800,.15);
+    },120);
+
+}
+
+
+function crashSound(){
+
+    sound(100,.4,"sawtooth");
+
+    setTimeout(()=>{
+        sound(60,.5,"square");
+    },100);
+
+}
+
+
+function scoreSound(){
+
+    sound(900,.08);
+
+}
+
+
+/* =========================================
+   KEYBOARD
+========================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        keys[event.key] = true;
+
+        if(
+            event.key === "ArrowLeft" ||
+            event.key === "ArrowRight"
+        ){
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keyup",
+    function(event){
+
+        keys[event.key] = false;
+
+    }
+);
+
+
+/* =========================================
+   START GAME
+========================================= */
+
+function startGame(){
+
+    if(audioCtx &&
+       audioCtx.state === "suspended"){
+
+        audioCtx.resume();
+
+    }
+
+    startSound();
+
+    gameRunning = true;
+
+    score = 0;
+
+    roadSpeed = 5;
+
+    roadOffset = 0;
+
+    enemyTimer = 0;
+
+    enemies = [];
+
+    player.x = 225;
+
+    document.getElementById("score")
+        .textContent = "0";
+
+    document.getElementById("speed")
+        .textContent = "1";
+
+    document.getElementById("message")
+        .style.display = "none";
+
+    cancelAnimationFrame(animationId);
+
+    gameLoop();
+
+}
+
+
+/* =========================================
+   GAME LOOP
+========================================= */
+
+function gameLoop(){
+
+    if(!gameRunning){
+
+        return;
+
+    }
+
+    update();
+
+    draw();
+
+    animationId =
+        requestAnimationFrame(gameLoop);
+
+}
+
+
+/* =========================================
+   UPDATE
+========================================= */
+
+function update(){
+
+    /* PLAYER MOVEMENT */
+
+    if(keys["ArrowLeft"]){
+
+        player.x -= player.speed;
+
+    }
+
+    if(keys["ArrowRight"]){
+
+        player.x += player.speed;
+
+    }
+
+
+    /* ROAD BOUNDARY */
+
+    const roadLeft = 80;
+
+    const roadRight = 420;
+
+
+    if(
+        player.x < roadLeft
+    ){
+
+        player.x = roadLeft;
+
+    }
+
+
+    if(
+        player.x + player.width >
+        roadRight
+    ){
+
+        player.x =
+            roadRight -
+            player.width;
+
+    }
+
+
+    /* ROAD */
+
+    roadOffset += roadSpeed;
+
+
+    if(
+        roadOffset >= 80
+    ){
+
+        roadOffset = 0;
+
+    }
+
+
+    /* CREATE ENEMIES */
+
+    enemyTimer++;
+
+    if(
+        enemyTimer > 70
+    ){
+
+        createEnemy();
+
+        enemyTimer = 0;
+
+    }
+
+
+    /* MOVE ENEMIES */
+
+    enemies.forEach(
+        enemy => {
+
+            enemy.y +=
+                roadSpeed +
+                enemy.extraSpeed;
+
+        }
+    );
+
+
+    /* REMOVE ENEMIES */
+
+    enemies =
+        enemies.filter(
+            enemy =>
+                enemy.y < canvas.height + 100
+        );
+
+
+    /* SCORE */
+
+    score++;
+
+    if(
+        score % 10 === 0
+    ){
+
+        document.getElementById("score")
+            .textContent =
+            Math.floor(score / 10);
+
+    }
+
+
+    /* SPEED INCREASE */
+
+    if(
+        score % 500 === 0 &&
+        roadSpeed < 14
+    ){
+
+        roadSpeed += 1;
+
+        document.getElementById("speed")
+            .textContent =
+            roadSpeed - 4;
+
+        scoreSound();
+
+    }
+
+
+    /* COLLISION */
+
+    for(
+        let enemy of enemies
+    ){
+
+        if(
+            collision(
+                player,
+                enemy
+            )
+        ){
+
+            gameOver();
+
+            return;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================
+   CREATE ENEMY
+========================================= */
+
+function createEnemy(){
+
+    const lanes = [
+        110,
+        180,
+        250,
+        320,
+        370
+    ];
+
+    const lane =
+        lanes[
+            Math.floor(
+                Math.random() *
+                lanes.length
+            )
+        ];
+
+
+    const enemy = {
+
+        x:lane,
+
+        y:-120,
+
+        width:50,
+
+        height:90,
+
+        extraSpeed:
+            Math.random() * 2
+
+    };
+
+
+    enemies.push(enemy);
+
+}
+
+
+/* =========================================
+   COLLISION
+========================================= */
+
+function collision(a,b){
+
+    return(
+
+        a.x < b.x + b.width &&
+
+        a.x + a.width > b.x &&
+
+        a.y < b.y + b.height &&
+
+        a.y + a.height > b.y
+
+    );
+
+}
+
+
+/* =========================================
+   DRAW EVERYTHING
+========================================= */
+
+function draw(){
+
+    drawBackground();
+
+    drawRoad();
+
+    drawPlayer();
+
+    drawEnemies();
+
+}
+
+
+/* =========================================
+   BACKGROUND
+========================================= */
+
+function drawBackground(){
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            canvas.height
+        );
+
+    gradient.addColorStop(
+        0,
+        "#07142b"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#02030a"
+    );
+
+    ctx.fillStyle = gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+}
+
+
+/* =========================================
+   ROAD
+========================================= */
+
+function drawRoad(){
+
+    /* ROAD */
+
+    ctx.fillStyle =
+        "#252525";
+
+    ctx.fillRect(
+        70,
+        0,
+        360,
+        canvas.height
+    );
+
+
+    /* LEFT BORDER */
+
+    ctx.fillStyle =
+        "#ff3d71";
+
+    ctx.fillRect(
+        65,
+        0,
+        5,
+        canvas.height
+    );
+
+
+    /* RIGHT BORDER */
+
+    ctx.fillRect(
+        430,
+        0,
+        5,
+        canvas.height
+    );
+
+
+    /* ROAD LINES */
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    for(
+        let y = -80 + roadOffset;
+        y < canvas.height;
+        y += 80
+    ){
+
+        ctx.fillRect(
+            160,
+            y,
+            8,
+            45
+        );
+
+        ctx.fillRect(
+            245,
+            y,
+            8,
+            45
+        );
+
+        ctx.fillRect(
+            330,
+            y,
+            8,
+            45
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   PLAYER CAR
+========================================= */
+
+function drawPlayer(){
+
+    const x = player.x;
+
+    const y = player.y;
+
+    /* CAR SHADOW */
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.5)";
+
+    ctx.fillRect(
+        x + 5,
+        y + 8,
+        player.width,
+        player.height
+    );
+
+
+    /* BODY */
+
+    const gradient =
+        ctx.createLinearGradient(
+            x,
+            y,
+            x + player.width,
+            y
+        );
+
+    gradient.addColorStop(
+        0,
+        "#00c8ff"
+    );
+
+    gradient.addColorStop(
+        .5,
+        "#7b2cff"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#ff3d71"
+    );
+
+    ctx.fillStyle =
+        gradient;
+
+    roundRect(
+        x,
+        y,
+        player.width,
+        player.height,
+        10
+    );
+
+
+    /* WINDOWS */
+
+    ctx.fillStyle =
+        "#06101f";
+
+    roundRect(
+        x + 9,
+        y + 13,
+        32,
+        27,
+        7
+    );
+
+
+    /* FRONT LIGHTS */
+
+    ctx.fillStyle =
+        "#ffff99";
+
+    ctx.fillRect(
+        x + 7,
+        y + 4,
+        10,
+        7
+    );
+
+    ctx.fillRect(
+        x + 33,
+        y + 4,
+        10,
+        7
+    );
+
+
+    /* TAIL LIGHTS */
+
+    ctx.fillStyle =
+        "#ff1744";
+
+    ctx.fillRect(
+        x + 7,
+        y + 76,
+        10,
+        7
+    );
+
+    ctx.fillRect(
+        x + 33,
+        y + 76,
+        10,
+        7
+    );
+
+
+    /* WHEELS */
+
+    drawWheel(
+        x - 5,
+        y + 15
+    );
+
+    drawWheel(
+        x + 40,
+        y + 15
+    );
+
+    drawWheel(
+        x - 5,
+        y + 65
+    );
+
+    drawWheel(
+        x + 40,
+        y + 65
+    );
+
+}
+
+
+/* =========================================
+   ENEMY CARS
+========================================= */
+
+function drawEnemies(){
+
+    enemies.forEach(
+        enemy => {
+
+            drawEnemy(enemy);
+
+        }
+    );
+
+}
+
+
+function drawEnemy(enemy){
+
+    const x = enemy.x;
+
+    const y = enemy.y;
+
+
+    /* BODY */
+
+    ctx.fillStyle =
+        "#ff1744";
+
+    roundRect(
+        x,
+        y,
+        enemy.width,
+        enemy.height,
+        10
+    );
+
+
+    /* WINDOW */
+
+    ctx.fillStyle =
+        "#08111d";
+
+    roundRect(
+        x + 9,
+        y + 13,
+        32,
+        27,
+        7
+    );
+
+
+    /* LIGHTS */
+
+    ctx.fillStyle =
+        "#ffffaa";
+
+    ctx.fillRect(
+        x + 7,
+        y + 76,
+        10,
+        7
+    );
+
+    ctx.fillRect(
+        x + 33,
+        y + 76,
+        10,
+        7
+    );
+
+
+    /* WHEELS */
+
+    drawWheel(
+        x - 5,
+        y + 15
+    );
+
+    drawWheel(
+        x + 40,
+        y + 15
+    );
+
+    drawWheel(
+        x - 5,
+        y + 65
+    );
+
+    drawWheel(
+        x + 40,
+        y + 65
+    );
+
+}
+
+
+/* =========================================
+   WHEEL
+========================================= */
+
+function drawWheel(x,y){
+
+    ctx.fillStyle =
+        "#050505";
+
+    ctx.fillRect(
+        x,
+        y,
+        15,
+        25
+    );
+
+}
+
+
+/* =========================================
+   ROUNDED RECTANGLE
+========================================= */
+
+function roundRect(
+    x,
+    y,
+    width,
+    height,
+    radius
+){
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        x,
+        y,
+        width,
+        height,
+        radius
+    );
+
+    ctx.fill();
+
+}
+
+
+/* =========================================
+   GAME OVER
+========================================= */
+
+function gameOver(){
+
+    gameRunning = false;
+
+    cancelAnimationFrame(
+        animationId
+    );
+
+    crashSound();
+
+    const finalScore =
+        Math.floor(score / 10);
+
+
+    document.getElementById(
+        "resultTitle"
+    ).textContent =
+        "💥 CRASH!";
+
+
+    document.getElementById(
+        "resultTitle"
+    ).className =
+        "lose";
+
+
+    document.getElementById(
+        "resultText"
+    ).textContent =
+        "🏆 Your Score: " +
+        finalScore;
+
+
+    document.getElementById(
+        "message"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================
+   INITIAL SCREEN
+========================================= */
+
+drawBackground();
+
+drawRoad();
+
+drawPlayer();
+
+</script>
+
+</body>
+</html>

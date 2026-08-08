@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Galaxy Game Hub</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at 20% 20%, #35106b, transparent 35%),
+        radial-gradient(circle at 80% 70%, #063c61, transparent 35%),
+        #03000d;
+}
+
+/* HEADER */
+
+header {
+    height: 70px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(5, 0, 20, 0.9);
+    border-bottom: 1px solid #ffffff20;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #00d9ff;
+}
+
+.home-btn {
+    padding: 10px 18px;
+    border: 1px solid #ffffff30;
+    border-radius: 10px;
+    background: #ffffff10;
+    color: white;
+    cursor: pointer;
+}
+
+/* MAIN */
+
+.container {
+    width: 92%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 50px 0;
+}
+
+.title {
+    text-align: center;
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+/* GAME MENU */
+
+.game-menu {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(200px, 1fr));
+
+    gap: 20px;
+}
+
+.game-button {
+    min-height: 180px;
+
+    border: 1px solid #ffffff20;
+    border-radius: 20px;
+
+    background: #ffffff08;
+    color: white;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.game-button:hover {
+    transform: translateY(-8px);
+
+    border-color: #7b2cff;
+
+    box-shadow:
+        0 15px 40px #7b2cff40;
+}
+
+.game-icon {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+.game-button h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.game-button p {
+    color: #999;
+}
+
+/* BIG GAME SCREEN */
+
+.game-screen {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 500;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #171044,
+            #02000a
+        );
+
+    padding: 30px;
+
+    overflow: auto;
+}
+
+.game-screen.active {
+    display: block;
+}
+
+/* GAME TOP */
+
+.game-top {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    max-width: 1200px;
+
+    margin: auto;
+}
+
+.game-title {
+    font-size: 32px;
+}
+
+.close-btn {
+    padding: 12px 20px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #ff315f;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+/* START BUTTON */
+
+.start-btn {
+    display: block;
+
+    margin: 30px auto;
+
+    padding: 15px 35px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #7b2cff,
+            #00c8ff
+        );
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+}
+
+.start-btn:hover {
+    transform: scale(1.05);
+}
+
+/* SCORE */
+
+.score {
+    text-align: center;
+
+    font-size: 22px;
+
+    margin: 20px;
+}
+
+/* SNAKE */
+
+#snakeCanvas {
+    display: block;
+
+    width: 500px;
+    height: 500px;
+
+    max-width: 90vw;
+    max-height: 70vh;
+
+    margin: 20px auto;
+
+    background: #020713;
+
+    border: 3px solid #00d9ff;
+}
+
+/* TIC TAC TOE */
+
+.ttt-board {
+    width: 420px;
+
+    max-width: 90vw;
+
+    margin: 30px auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+.ttt-cell {
+    height: 130px;
+
+    font-size: 55px;
+
+    font-weight: bold;
+
+    border: 1px solid #7b2cff;
+
+    border-radius: 15px;
+
+    background: #ffffff08;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+.ttt-cell:hover {
+    background: #7b2cff30;
+}
+
+.status {
+    text-align: center;
+
+    font-size: 25px;
+
+    margin: 20px;
+}
+
+/* REACTION */
+
+.reaction-box {
+    width: 700px;
+
+    max-width: 90vw;
+
+    height: 400px;
+
+    margin: 40px auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 25px;
+
+    background: #32105a;
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.reaction-box.wait {
+    background: #6b2020;
+}
+
+.reaction-box.ready {
+    background: #126b35;
+}
+
+/* CLICK GAME */
+
+.click-area {
+    width: 900px;
+
+    max-width: 90vw;
+
+    height: 500px;
+
+    margin: 30px auto;
+
+    border: 2px solid #ffffff20;
+
+    border-radius: 20px;
+
+    position: relative;
+
+    background: #020713;
+}
+
+.target {
+    width: 65px;
+
+    height: 65px;
+
+    border-radius: 50%;
+
+    position: absolute;
+
+    display: none;
+
+    cursor: pointer;
+
+    background:
+        radial-gradient(
+            circle,
+            white 10%,
+            red 12%,
+            red 35%,
+            white 37%,
+            white 50%,
+            red 52%
+        );
+}
+
+/* QUIZ */
+
+.quiz {
+    width: 700px;
+
+    max-width: 90vw;
+
+    margin: 50px auto;
+}
+
+.question {
+    font-size: 27px;
+
+    margin-bottom: 25px;
+}
+
+.answer {
+    display: block;
+
+    width: 100%;
+
+    padding: 18px;
+
+    margin: 12px 0;
+
+    border: 1px solid #ffffff20;
+
+    border-radius: 12px;
+
+    background: #ffffff08;
+
+    color: white;
+
+    text-align: left;
+
+    font-size: 17px;
+
+    cursor: pointer;
+}
+
+.answer:hover {
+    background: #7b2cff30;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:600px) {
+
+    .title {
+        font-size: 30px;
+    }
+
+    .game-title {
+        font-size: 22px;
+    }
+
+    .ttt-cell {
+        height: 90px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        🌌 GALAXY <span>HUB</span>
+    </div>
+
+    <button
+        class="home-btn"
+        onclick="location.reload()">
+
+        🏠 Home
+
+    </button>
+
+</header>
+
+<main class="container">
+
+    <h1 class="title">
+        🎮 PLAY ZONE
+    </h1>
+
+    <p class="subtitle">
+        Click a game to open it in BIG SCREEN
+    </p>
+
+    <div class="game-menu">
+
+        <button
+            class="game-button"
+            onclick="openGame('snake')">
+
+            <div class="game-icon">
+                🐍
+            </div>
+
+            <h3>
+                Snake Galaxy
+            </h3>
+
+            <p>
+                Classic Snake
+            </p>
+
+        </button>
+
+
+        <button
+            class="game-button"
+            onclick="openGame('ttt')">
+
+            <div class="game-icon">
+                ❌
+            </div>
+
+            <h3>
+                Tic Tac Toe
+            </h3>
+
+            <p>
+                2 Players
+            </p>
+
+        </button>
+
+
+        <button
+            class="game-button"
+            onclick="openGame('reaction')">
+
+            <div class="game-icon">
+                ⚡
+            </div>
+
+            <h3>
+                Reaction Rush
+            </h3>
+
+            <p>
+                Test your speed
+            </p>
+
+        </button>
+
+
+        <button
+            class="game-button"
+            onclick="openGame('target')">
+
+            <div class="game-icon">
+                🎯
+            </div>
+
+            <h3>
+                Target Hunter
+            </h3>
+
+            <p>
+                Hit the targets
+            </p>
+
+        </button>
+
+
+        <button
+            class="game-button"
+            onclick="openGame('quiz')">
+
+            <div class="game-icon">
+                🧠
+            </div>
+
+            <h3>
+                Galaxy Quiz
+            </h3>
+
+            <p>
+                Answer questions
+            </p>
+
+        </button>
+
+
+        <button
+            class="game-button"
+            onclick="openGame('clicker')">
+
+            <div class="game-icon">
+                🖱️
+            </div>
+
+            <h3>
+                Fast Clicker
+            </h3>
+
+            <p>
+                Click as fast as possible
+            </p>
+
+        </button>
+
+    </div>
+
+</main>
+
+
+<!-- =========================
+     SNAKE
+========================= -->
+
+<section
+    class="game-screen"
+    id="snakeGame">
+
+    <div class="game-top">
+
+        <h2 class="game-title">
+            🐍 Snake Galaxy
+        </h2>
+
+        <button
+            class="close-btn"
+            onclick="closeGame()">
+
+            ✕ Close
+
+        </button>
+
+    </div>
+
+    <div class="score">
+
+        Score:
+        <span id="snakeScore">
+            0
+        </span>
+
+    </div>
+
+    <canvas
+        id="snakeCanvas"
+        width="500"
+        height="500">
+    </canvas>
+
+    <button
+        class="start-btn"
+        onclick="startSnake()">
+
+        ▶ START GAME
+
+    </button>
+
+</section>
+
+
+<!-- =========================
+     TIC TAC TOE
+========================= -->
+
+<section
+    class="game-screen"
+    id="tttGame">
+
+    <div class="game-top">
+
+        <h2 class="game-title">
+            ❌ Tic Tac Toe
+        </h2>
+
+        <button
+            class="close-btn"
+            onclick="closeGame()">
+
+            ✕ Close
+
+        </button>
+
+    </div>
+
+    <div
+        class="status"
+        id="tttStatus">
+
+        Click START
+
+    </div>
+
+    <div class="ttt-board">
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(0)">
+        </button>
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(1)">
+        </button>
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(2)">
+        </button>
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(3)">
+        </button>
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(4)">
+        </button>
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(5)">
+        </button>
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(6)">
+        </button>
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(7)">
+        </button>
+
+        <button
+            class="ttt-cell"
+            onclick="tttMove(8)">
+        </button>
+
+    </div>
+
+    <button
+        class="start-btn"
+        onclick="startTTT()">
+
+        ▶ START GAME
+
+    </button>
+
+</section>
+
+
+<!-- =========================
+     REACTION
+========================= -->
+
+<section
+    class="game-screen"
+    id="reactionGame">
+
+    <div class="game-top">
+
+        <h2 class="game-title">
+            ⚡ Reaction Rush
+        </h2>
+
+        <button
+            class="close-btn"
+            onclick="closeGame()">
+
+            ✕ Close
+
+        </button>
+
+    </div>
+
+    <div
+        class="reaction-box"
+        id="reactionBox">
+
+        Click START
+
+    </div>
+
+    <div class="score">
+
+        Time:
+        <span id="reactionScore">
+            -
+        </span>
+
+        ms
+
+    </div>
+
+    <button
+        class="start-btn"
+        onclick="startReaction()">
+
+        ▶ START GAME
+
+    </button>
+
+</section>
+
+
+<!-- =========================
+     TARGET
+========================= -->
+
+<section
+    class="game-screen"
+    id="targetGame">
+
+    <div class="game-top">
+
+        <h2 class="game-title">
+            🎯 Target Hunter
+        </h2>
+
+        <button
+            class="close-btn"
+            onclick="closeGame()">
+
+            ✕ Close
+
+        </button>
+
+    </div>
+
+    <div class="score">
+
+        Score:
+        <span id="targetScore">
+            0
+        </span>
+
+    </div>
+
+    <div
+        class="click-area"
+        id="targetArea">
+
+        <div
+            class="target"
+            id="target"
+            onclick="hitTarget(event)">
+        </div>
+
+    </div>
+
+    <button
+        class="start-btn"
+        onclick="startTarget()">
+
+        ▶ START GAME
+
+    </button>
+
+</section>
+
+
+<!-- =========================
+     QUIZ
+========================= -->
+
+<section
+    class="game-screen"
+    id="quizGame">
+
+    <div class="game-top">
+
+        <h2 class="game-title">
+            🧠 Galaxy Quiz
+        </h2>
+
+        <button
+            class="close-btn"
+            onclick="closeGame()">
+
+            ✕ Close
+
+        </button>
+
+    </div>
+
+    <div class="quiz">
+
+        <div class="score">
+
+            Score:
+            <span id="quizScore">
+                0
+            </span>
+
+        </div>
+
+        <div
+            class="question"
+            id="quizQuestion">
+
+            Click START
+
+        </div>
+
+        <div id="quizAnswers"></div>
+
+        <button
+            class="start-btn"
+            onclick="startQuiz()">
+
+            ▶ START QUIZ
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FAST CLICKER
+========================= -->
+
+<section
+    class="game-screen"
+    id="clickerGame">
+
+    <div class="game-top">
+
+        <h2 class="game-title">
+            🖱️ Fast Clicker
+        </h2>
+
+        <button
+            class="close-btn"
+            onclick="closeGame()">
+
+            ✕ Close
+
+        </button>
+
+    </div>
+
+    <div class="score">
+
+        Clicks:
+        <span id="clickScore">
+            0
+        </span>
+
+    </div>
+
+    <div
+        class="reaction-box"
+        id="clickBox">
+
+        Click START
+
+    </div>
+
+    <button
+        class="start-btn"
+        onclick="startClicker()">
+
+        ▶ START GAME
+
+    </button>
+
+</section>
+
+
+<script>
+
+/* =========================
+   GAME NAVIGATION
+========================= */
+
+function openGame(game) {
+
+    closeGame();
+
+    document
+        .getElementById(game + "Game")
+        .classList.add("active");
+
+}
+
+
+function closeGame() {
+
+    document
+        .querySelectorAll(".game-screen")
+        .forEach(function(screen) {
+
+            screen.classList.remove("active");
+
+        });
+
+    stopSnake();
+
+    stopTarget();
+
+}
+
+
+/* =========================
+   SNAKE
+========================= */
+
+const canvas =
+    document.getElementById("snakeCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+const grid = 25;
+
+let snake = [];
+
+let food = {};
+
+let direction = {
+    x: 1,
+    y: 0
+};
+
+let nextDirection = {
+    x: 1,
+    y: 0
+};
+
+let snakeTimer = null;
+
+let snakeScore = 0;
+
+
+function startSnake() {
+
+    clearInterval(snakeTimer);
+
+    snake = [
+        {x: 10, y: 10},
+        {x: 9, y: 10},
+        {x: 8, y: 10}
+    ];
+
+    direction = {
+        x: 1,
+        y: 0
+    };
+
+    nextDirection = {
+        x: 1,
+        y: 0
+    };
+
+    snakeScore = 0;
+
+    document
+        .getElementById("snakeScore")
+        .textContent = snakeScore;
+
+    createFood();
+
+    drawSnake();
+
+    snakeTimer =
+        setInterval(
+            updateSnake,
+            110
+        );
+
+}
+
+
+function stopSnake() {
+
+    clearInterval(snakeTimer);
+
+    snakeTimer = null;
+
+}
+
+
+function createFood() {
+
+    food = {
+
+        x:
+            Math.floor(
+                Math.random() *
+                (canvas.width / grid)
+            ),
+
+        y:
+            Math.floor(
+                Math.random() *
+                (canvas.height / grid)
+            )
+
+    };
+
+}
+
+
+function updateSnake() {
+
+    direction = nextDirection;
+
+    const head = {
+
+        x:
+            snake[0].x +
+            direction.x,
+
+        y:
+            snake[0].y +
+            direction.y
+
+    };
+
+    const max =
+        canvas.width / grid;
+
+
+    if (
+        head.x < 0 ||
+        head.x >= max ||
+        head.y < 0 ||
+        head.y >= max
+    ) {
+
+        snakeOver();
+
+        return;
+
+    }
+
+
+    for (
+        let part of snake
+    ) {
+
+        if (
+            head.x === part.x &&
+            head.y === part.y
+        ) {
+
+            snakeOver();
+
+            return;
+
+        }
+
+    }
+
+
+    snake.unshift(head);
+
+
+    if (
+        head.x === food.x &&
+        head.y === food.y
+    ) {
+
+        snakeScore += 10;
+
+        document
+            .getElementById("snakeScore")
+            .textContent = snakeScore;
+
+        createFood();
+
+    }
+
+    else {
+
+        snake.pop();
+
+    }
+
+    drawSnake();
+
+}
+
+
+function drawSnake() {
+
+    ctx.fillStyle =
+        "#020713";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    ctx.fillStyle =
+        "#ff315f";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        food.x * grid + grid / 2,
+        food.y * grid + grid / 2,
+        8,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    snake.forEach(
+        function(part, index) {
+
+            ctx.fillStyle =
+                index === 0
+                ? "#00eaff"
+                : "#7b2cff";
+
+            ctx.fillRect(
+                part.x * grid + 2,
+                part.y * grid + 2,
+                grid - 4,
+                grid - 4
+            );
+
+        }
+    );
+
+}
+
+
+function snakeOver() {
+
+    stopSnake();
+
+    alert(
+        "🐍 GAME OVER!\nScore: "
+        + snakeScore
+    );
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "ArrowUp" &&
+            direction.y !== 1
+        ) {
+
+            nextDirection = {
+                x: 0,
+                y: -1
+            };
+
+        }
+
+
+        if (
+            event.key === "ArrowDown" &&
+            direction.y !== -1
+        ) {
+
+            nextDirection = {
+                x: 0,
+                y: 1
+            };
+
+        }
+
+
+        if (
+            event.key === "ArrowLeft" &&
+            direction.x !== 1
+        ) {
+
+            nextDirection = {
+                x: -1,
+                y: 0
+            };
+
+        }
+
+
+        if (
+            event.key === "ArrowRight" &&
+            direction.x !== -1
+        ) {
+
+            nextDirection = {
+                x: 1,
+                y: 0
+            };
+
+        }
+
+    }
+);
+
+
+/* =========================
+   TIC TAC TOE
+========================= */
+
+let board = [];
+
+let player = "X";
+
+let tttRunning = false;
+
+let tttOver = false;
+
+
+const wins = [
+
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+
+    [0,4,8],
+    [2,4,6]
+
+];
+
+
+function startTTT() {
+
+    board = [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ];
+
+    player = "X";
+
+    tttRunning = true;
+
+    tttOver = false;
+
+    document
+        .getElementById("tttStatus")
+        .textContent =
+        "Player X Turn";
+
+    renderTTT();
+
+}
+
+
+function tttMove(index) {
+
+    if (
+        !tttRunning ||
+        tttOver ||
+        board[index] !== ""
+    ) {
+
+        return;
+
+    }
+
+
+    board[index] = player;
+
+    renderTTT();
+
+
+    if (checkWinner()) {
+
+        tttOver = true;
+
+        document
+            .getElementById("tttStatus")
+            .textContent =
+            "🏆 Player "
+            + player
+            + " Wins!";
+
+        return;
+
+    }
+
+
+    if (!board.includes("")) {
+
+        tttOver = true;
+
+        document
+            .getElementById("tttStatus")
+            .textContent =
+            "🤝 DRAW!";
+
+        return;
+
+    }
+
+
+    player =
+        player === "X"
+        ? "O"
+        : "X";
+
+
+    document
+        .getElementById("tttStatus")
+        .textContent =
+        "Player "
+        + player
+        + " Turn";
+
+}
+
+
+function renderTTT() {
+
+    document
+        .querySelectorAll(".ttt-cell")
+        .forEach(
+            function(cell, index) {
+
+                cell.textContent =
+                    board[index];
+
+            }
+        );
+
+}
+
+
+function checkWinner() {
+
+    return wins.some(
+        function(line) {
+
+            const a = line[0];
+
+            const b = line[1];
+
+            const c = line[2];
+
+            return (
+                board[a] &&
+                board[a] === board[b] &&
+                board[a] === board[c]
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   REACTION
+========================= */
+
+let reactionTimer = null;
+
+let reactionStart = 0;
+
+let reactionWaiting = false;
+
+
+function startReaction() {
+
+    const box =
+        document.getElementById(
+            "reactionBox"
+        );
+
+    clearTimeout(reactionTimer);
+
+    reactionWaiting = true;
+
+    reactionStart = 0;
+
+    box.className =
+        "reaction-box wait";
+
+    box.textContent =
+        "WAIT...";
+
+
+    const delay =
+        1500 +
+        Math.random() * 3000;
+
+
+    reactionTimer =
+        setTimeout(
+            function() {
+
+                reactionWaiting = false;
+
+                reactionStart =
+                    performance.now();
+
+                box.className =
+                    "reaction-box ready";
+
+                box.textContent =
+                    "🟢 CLICK NOW!";
+
+            },
+            delay
+        );
+
+}
+
+
+document
+    .getElementById("reactionBox")
+    .onclick =
+    function() {
+
+        const box =
+            document.getElementById(
+                "reactionBox"
+            );
+
+
+        if (reactionWaiting) {
+
+            clearTimeout(
+                reactionTimer
+            );
+
+            reactionWaiting = false;
+
+            box.className =
+                "reaction-box";
+
+            box.textContent =
+                "❌ TOO EARLY!";
+
+            return;
+
+        }
+
+
+        if (reactionStart === 0) {
+
+            return;
+
+        }
+
+
+        const time =
+            Math.round(
+                performance.now()
+                - reactionStart
+            );
+
+
+        document
+            .getElementById(
+                "reactionScore"
+            )
+            .textContent = time;
+
+
+        box.className =
+            "reaction-box";
+
+        box.textContent =
+            "⚡ "
+            + time
+            + " ms";
+
+        reactionStart = 0;
+
+    };
+
+
+/* =========================
+   TARGET
+========================= */
+
+let targetScore = 0;
+
+let targetTimer = null;
+
+
+function startTarget() {
+
+    stopTarget();
+
+    targetScore = 0;
+
+    document
+        .getElementById("targetScore")
+        .textContent = 0;
+
+    document
+        .getElementById("target")
+        .style.display = "block";
+
+    moveTarget();
+
+
+    targetTimer =
+        setTimeout(
+            function() {
+
+                stopTarget();
+
+                alert(
+                    "🎯 TIME UP!\nScore: "
+                    + targetScore
+                );
+
+            },
+            30000
+        );
+
+}
+
+
+function moveTarget() {
+
+    const area =
+        document.getElementById(
+            "targetArea"
+        );
+
+    const target =
+        document.getElementById(
+            "target"
+        );
+
+
+    const maxX =
+        area.clientWidth -
+        target.offsetWidth;
+
+    const maxY =
+        area.clientHeight -
+        target.offsetHeight;
+
+
+    target.style.left =
+        Math.random() *
+        maxX +
+        "px";
+
+    target.style.top =
+        Math.random() *
+        maxY +
+        "px";
+
+}
+
+
+function hitTarget(event) {
+
+    event.stopPropagation();
+
+    targetScore++;
+
+    document
+        .getElementById("targetScore")
+        .textContent =
+        targetScore;
+
+    moveTarget();
+
+}
+
+
+function stopTarget() {
+
+    clearTimeout(targetTimer);
+
+    targetTimer = null;
+
+    const target =
+        document.getElementById(
+            "target"
+        );
+
+    if (target) {
+
+        target.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================
+   QUIZ
+========================= */
+
+const questions = [
+
+    {
+        q: "Which language styles a web page?",
+        a: ["HTML", "CSS", "Python", "C"],
+        correct: 1
+    },
+
+    {
+        q: "Which language creates web structure?",
+        a: ["HTML", "Python", "SQL", "Java"],
+        correct: 0
+    },
+
+    {
+        q: "What does CPU mean?",
+        a: [
+            "Central Processing Unit",
+            "Computer Power Unit",
+            "Central Program User",
+            "Computer Personal Unit"
+        ],
+        correct: 0
+    },
+
+    {
+        q: "Which is a programming language?",
+        a: [
+            "Python",
+            "Keyboard",
+            "Monitor",
+            "Mouse"
+        ],
+        correct: 0
+    },
+
+    {
+        q: "Which one is used for styling?",
+        a: [
+            "CSS",
+            "CPU",
+            "RAM",
+            "HTML"
+        ],
+        correct: 0
+    }
+
+];
+
+
+let quizIndex = 0;
+
+let quizScore = 0;
+
+
+function startQuiz() {
+
+    quizIndex = 0;
+
+    quizScore = 0;
+
+    document
+        .getElementById("quizScore")
+        .textContent = 0;
+
+    showQuestion();
+
+}
+
+
+function showQuestion() {
+
+    if (
+        quizIndex >=
+        questions.length
+    ) {
+
+        document
+            .getElementById("quizQuestion")
+            .textContent =
+            "🎉 QUIZ COMPLETE!";
+
+        document
+            .getElementById("quizAnswers")
+            .innerHTML =
+            "<h2 style='text-align:center'>"
+            + quizScore
+            + " / "
+            + questions.length
+            + "</h2>";
+
+        return;
+
+    }
+
+
+    const question =
+        questions[quizIndex];
+
+
+    document
+        .getElementById("quizQuestion")
+        .textContent =
+        (quizIndex + 1)
+        + ". "
+        + question.q;
+
+
+    const area =
+        document.getElementById(
+            "quizAnswers"
+        );
+
+    area.innerHTML = "";
+
+
+    question.a.forEach(
+        function(answer, index) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "answer";
+
+            button.textContent =
+                answer;
+
+            button.onclick =
+                function() {
+
+                    if (
+                        index ===
+                        question.correct
+                    ) {
+
+                        quizScore++;
+
+                    }
+
+                    document
+                        .getElementById(
+                            "quizScore"
+                        )
+                        .textContent =
+                        quizScore;
+
+                    quizIndex++;
+
+                    showQuestion();
+
+                };
+
+
+            area.appendChild(button);
+
+        }
+    );
+
+}
+
+
+/* =========================
+   FAST CLICKER
+========================= */
+
+let clickScore = 0;
+
+let clickRunning = false;
+
+let clickTimer = null;
+
+
+function startClicker() {
+
+    clickScore = 0;
+
+    clickRunning = true;
+
+    document
+        .getElementById("clickScore")
+        .textContent = 0;
+
+
+    const box =
+        document.getElementById(
+            "clickBox"
+        );
+
+    box.textContent =
+        "CLICK AS FAST AS POSSIBLE!";
+
+
+    clearTimeout(clickTimer);
+
+
+    clickTimer =
+        setTimeout(
+            function() {
+
+                clickRunning = false;
+
+                box.textContent =
+                    "⏰ TIME UP!";
+
+                alert(
+                    "🖱️ GAME OVER!\nClicks: "
+                    + clickScore
+                );
+
+            },
+            10000
+        );
+
+}
+
+
+document
+    .getElementById("clickBox")
+    .onclick =
+    function() {
+
+        if (!clickRunning) {
+
+            return;
+
+        }
+
+        clickScore++;
+
+        document
+            .getElementById(
+                "clickScore"
+            )
+            .textContent =
+            clickScore;
+
+    };
+
+</script>
+
+</body>
+</html>

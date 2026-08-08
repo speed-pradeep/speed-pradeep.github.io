@@ -1,0 +1,3264 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Galaxy Game Hub</title>
+
+<style>
+
+/* ==============================
+   BASIC
+============================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    min-height:100vh;
+
+    font-family:Arial,sans-serif;
+
+    color:white;
+
+    background:
+    radial-gradient(
+        circle at 20% 20%,
+        #4b168f,
+        transparent 30%
+    ),
+    radial-gradient(
+        circle at 80% 70%,
+        #064d78,
+        transparent 30%
+    ),
+    #03000d;
+
+}
+
+body:before{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:-1;
+
+    background-image:
+    radial-gradient(2px 2px at 20% 30%,white,transparent),
+    radial-gradient(1px 1px at 40% 70%,white,transparent),
+    radial-gradient(2px 2px at 70% 20%,white,transparent),
+    radial-gradient(1px 1px at 90% 80%,white,transparent),
+    radial-gradient(2px 2px at 55% 45%,white,transparent);
+
+    background-size:300px 250px;
+
+    animation:stars 20s linear infinite;
+
+}
+
+@keyframes stars{
+
+    from{
+        transform:translateY(0);
+    }
+
+    to{
+        transform:translateY(250px);
+    }
+
+}
+
+
+/* ==============================
+   START SCREEN
+============================== */
+
+.startScreen{
+
+    position:fixed;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+    radial-gradient(
+        circle,
+        #281060,
+        #03000d 70%
+    );
+
+    z-index:1000;
+
+}
+
+.startBox{
+
+    width:90%;
+
+    max-width:650px;
+
+    text-align:center;
+
+    padding:50px 30px;
+
+    border:1px solid #ffffff20;
+
+    border-radius:30px;
+
+    background:#ffffff08;
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:0 0 80px #7b2cff40;
+
+}
+
+.bigLogo{
+
+    font-size:55px;
+
+    font-weight:bold;
+
+    margin-bottom:20px;
+
+    text-shadow:
+    0 0 20px #00d9ff,
+    0 0 50px #7b2cff;
+
+}
+
+.bigLogo span{
+    color:#00d9ff;
+}
+
+.startButton{
+
+    border:0;
+
+    padding:18px 50px;
+
+    border-radius:50px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #7b2cff,
+        #00bfff
+    );
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-top:30px;
+
+    transition:.3s;
+
+}
+
+.startButton:hover{
+
+    transform:scale(1.08);
+
+    box-shadow:0 0 40px #00d9ff;
+
+}
+
+
+/* ==============================
+   MAIN
+============================== */
+
+#main{
+
+    display:none;
+
+}
+
+header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:15px 5%;
+
+    background:#050014dd;
+
+    backdrop-filter:blur(15px);
+
+    border-bottom:1px solid #ffffff15;
+
+}
+
+.logo{
+
+    font-size:22px;
+
+    font-weight:bold;
+
+}
+
+.logo span{
+
+    color:#00d9ff;
+
+}
+
+.container{
+
+    width:92%;
+
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:40px 0 80px;
+
+}
+
+.title{
+
+    text-align:center;
+
+    font-size:42px;
+
+    margin-bottom:10px;
+
+    text-shadow:0 0 20px #7b2cff;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#aaa;
+
+    margin-bottom:35px;
+
+}
+
+
+/* ==============================
+   GAME MENU
+============================== */
+
+.gameMenu{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(190px,1fr));
+
+    gap:18px;
+
+}
+
+.gameCard{
+
+    padding:25px 15px;
+
+    min-height:180px;
+
+    border:1px solid #ffffff15;
+
+    border-radius:20px;
+
+    background:#ffffff08;
+
+    color:white;
+
+    cursor:pointer;
+
+    text-align:center;
+
+    transition:.3s;
+
+}
+
+.gameCard:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#00d9ff;
+
+    box-shadow:0 15px 40px #7b2cff30;
+
+}
+
+.icon{
+
+    font-size:45px;
+
+    margin-bottom:15px;
+
+}
+
+.gameCard h3{
+
+    margin-bottom:8px;
+
+}
+
+.gameCard p{
+
+    color:#888;
+
+    font-size:12px;
+
+}
+
+
+/* ==============================
+   GAME SCREEN
+============================== */
+
+.gameScreen{
+
+    display:none;
+
+    margin-top:30px;
+
+    padding:30px;
+
+    border:1px solid #ffffff15;
+
+    border-radius:25px;
+
+    background:#ffffff06;
+
+}
+
+.gameScreen.active{
+
+    display:block;
+
+}
+
+.gameHeader{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.close{
+
+    border:0;
+
+    padding:9px 16px;
+
+    border-radius:10px;
+
+    background:#ff3d71;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+.gameArea{
+
+    max-width:700px;
+
+    margin:auto;
+
+    text-align:center;
+
+}
+
+.bigText{
+
+    font-size:30px;
+
+    margin:20px;
+
+}
+
+.score{
+
+    font-size:20px;
+
+    margin:15px;
+
+}
+
+.btn{
+
+    border:0;
+
+    padding:12px 22px;
+
+    margin:8px;
+
+    border-radius:12px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #7b2cff,
+        #00bfff
+    );
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.btn:hover{
+
+    transform:scale(1.04);
+
+}
+
+.input{
+
+    padding:13px;
+
+    border-radius:10px;
+
+    border:1px solid #ffffff20;
+
+    background:#ffffff10;
+
+    color:white;
+
+    outline:none;
+
+    width:220px;
+
+    text-align:center;
+
+}
+
+
+/* ==============================
+   TIC TAC TOE
+============================== */
+
+.ttt{
+
+    width:330px;
+
+    max-width:100%;
+
+    margin:20px auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:8px;
+
+}
+
+.cell{
+
+    height:100px;
+
+    border:1px solid #7b2cff;
+
+    border-radius:12px;
+
+    background:#ffffff08;
+
+    color:white;
+
+    font-size:40px;
+
+    cursor:pointer;
+
+}
+
+
+/* ==============================
+   COLOR BOX
+============================== */
+
+.colorBox{
+
+    width:250px;
+
+    height:180px;
+
+    margin:20px auto;
+
+    border-radius:20px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:25px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+
+/* ==============================
+   TARGET
+============================== */
+
+.targetArea{
+
+    position:relative;
+
+    height:400px;
+
+    max-width:800px;
+
+    margin:auto;
+
+    border:1px solid #ffffff20;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:#020713;
+
+}
+
+.target{
+
+    position:absolute;
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        circle,
+        white 10%,
+        red 12%,
+        red 30%,
+        white 32%,
+        white 45%,
+        red 47%
+    );
+
+    cursor:pointer;
+
+}
+
+
+/* ==============================
+   MEMORY
+============================== */
+
+.memory{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,80px);
+
+    justify-content:center;
+
+    gap:10px;
+
+}
+
+.memoryCard{
+
+    height:80px;
+
+    border-radius:12px;
+
+    background:#7b2cff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:30px;
+
+    cursor:pointer;
+
+}
+
+
+/* ==============================
+   DICE
+============================== */
+
+.dice{
+
+    font-size:100px;
+
+    margin:20px;
+
+}
+
+
+/* ==============================
+   WIN POPUP
+============================== */
+
+#popup{
+
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#000000bb;
+
+    z-index:2000;
+
+}
+
+.popupBox{
+
+    padding:45px;
+
+    text-align:center;
+
+    border:2px solid #00d9ff;
+
+    border-radius:25px;
+
+    background:#100329;
+
+    box-shadow:0 0 70px #7b2cff;
+
+    animation:pop .4s ease;
+
+}
+
+@keyframes pop{
+
+    from{
+        transform:scale(.3);
+    }
+
+    to{
+        transform:scale(1);
+    }
+
+}
+
+.popupBox h1{
+
+    color:#55ff9a;
+
+    font-size:42px;
+
+    margin-bottom:15px;
+
+}
+
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media(max-width:600px){
+
+    .bigLogo{
+        font-size:38px;
+    }
+
+    .title{
+        font-size:30px;
+    }
+
+    .gameScreen{
+        padding:15px;
+    }
+
+    .memory{
+        grid-template-columns:
+        repeat(4,60px);
+    }
+
+    .memoryCard{
+        height:60px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==============================
+     START
+============================== -->
+
+<div
+    class="startScreen"
+    id="startScreen"
+>
+
+<div class="startBox">
+
+    <div class="bigLogo">
+
+        🌌 GALAXY
+        <span>HUB</span>
+
+    </div>
+
+    <h2>
+
+        🎮 Ultimate Mini Game Center
+
+    </h2>
+
+    <p style="color:#aaa;margin-top:10px">
+
+        15 basic games • Bot games • Friends mode
+
+    </p>
+
+    <button
+        class="startButton"
+        onclick="startHub()"
+    >
+
+        🚀 START GAME
+
+    </button>
+
+</div>
+
+</div>
+
+
+<!-- ==============================
+     MAIN
+============================== -->
+
+<div id="main">
+
+
+<header>
+
+<div class="logo">
+
+    🌌 GALAXY
+    <span>HUB</span>
+
+</div>
+
+<button
+    class="btn"
+    onclick="backStart()"
+>
+
+    ⏮ Home
+
+</button>
+
+</header>
+
+
+<div class="container">
+
+
+<h1 class="title">
+
+    🎮 PLAY ZONE
+
+</h1>
+
+
+<p class="subtitle">
+
+    Choose any game and start playing!
+
+</p>
+
+
+<!-- ==============================
+     GAME MENU
+============================== -->
+
+<div class="gameMenu">
+
+
+<button
+    class="gameCard"
+    onclick="openGame('rps')"
+>
+
+<div class="icon">✊</div>
+
+<h3>Rock Paper Scissors</h3>
+
+<p>Player vs Bot</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('guess')"
+>
+
+<div class="icon">🔢</div>
+
+<h3>Guess Number</h3>
+
+<p>Guess the bot number</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('coin')"
+>
+
+<div class="icon">🪙</div>
+
+<h3>Coin Toss</h3>
+
+<p>Heads or Tails</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('dice')"
+>
+
+<div class="icon">🎲</div>
+
+<h3>Dice Roll</h3>
+
+<p>Roll the dice</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('evenodd')"
+>
+
+<div class="icon">🔢</div>
+
+<h3>Even or Odd</h3>
+
+<p>Predict the number</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('math')"
+>
+
+<div class="icon">🧮</div>
+
+<h3>Math Challenge</h3>
+
+<p>Quick calculation</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('reaction')"
+>
+
+<div class="icon">⚡</div>
+
+<h3>Reaction Rush</h3>
+
+<p>Test your speed</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('target')"
+>
+
+<div class="icon">🎯</div>
+
+<h3>Target Hunter</h3>
+
+<p>Hit targets</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('ttt')"
+>
+
+<div class="icon">❌</div>
+
+<h3>Tic Tac Toe</h3>
+
+<p>Play with friend</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('memory')"
+>
+
+<div class="icon">🧠</div>
+
+<h3>Memory Cards</h3>
+
+<p>Find matching cards</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('color')"
+>
+
+<div class="icon">🎨</div>
+
+<h3>Color Match</h3>
+
+<p>Choose the correct color</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('quick')"
+>
+
+<div class="icon">👆</div>
+
+<h3>Quick Tap</h3>
+
+<p>Tap as fast as possible</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('higher')"
+>
+
+<div class="icon">🃏</div>
+
+<h3>Higher or Lower</h3>
+
+<p>Predict the next card</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('word')"
+>
+
+<div class="icon">🔤</div>
+
+<h3>Word Scramble</h3>
+
+<p>Find the word</p>
+
+</button>
+
+
+<button
+    class="gameCard"
+    onclick="openGame('ten')"
+>
+
+<div class="icon">⏱️</div>
+
+<h3>10 Second Challenge</h3>
+
+<p>Stop at 10 seconds</p>
+
+</button>
+
+
+</div>
+
+
+<!-- ==============================
+     RPS
+============================== -->
+
+<section
+    class="gameScreen"
+    id="rpsGame"
+>
+
+<div class="gameHeader">
+
+<h2>✊ Rock Paper Scissors</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div class="bigText" id="rpsResult">
+Choose your move
+</div>
+
+<button
+    class="btn"
+    onclick="rps('Rock')"
+>
+✊ Rock
+</button>
+
+<button
+    class="btn"
+    onclick="rps('Paper')"
+>
+📄 Paper
+</button>
+
+<button
+    class="btn"
+    onclick="rps('Scissors')"
+>
+✂️ Scissors
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     GUESS
+============================== -->
+
+<section
+    class="gameScreen"
+    id="guessGame"
+>
+
+<div class="gameHeader">
+
+<h2>🔢 Guess Number</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<p>
+
+Bot selected a number from 1 to 100.
+
+</p>
+
+<br>
+
+<input
+    class="input"
+    id="guessInput"
+    type="number"
+    min="1"
+    max="100"
+    placeholder="Enter number"
+>
+
+<br>
+
+<button
+    class="btn"
+    onclick="guessNumber()"
+>
+Guess
+</button>
+
+<p
+    class="bigText"
+    id="guessResult"
+>
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     COIN
+============================== -->
+
+<section
+    class="gameScreen"
+    id="coinGame"
+>
+
+<div class="gameHeader">
+
+<h2>🪙 Coin Toss</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="bigText"
+    id="coinResult"
+>
+Choose Heads or Tails
+</div>
+
+<button
+    class="btn"
+    onclick="coin('Heads')"
+>
+🙂 Heads
+</button>
+
+<button
+    class="btn"
+    onclick="coin('Tails')"
+>
+🔵 Tails
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     DICE
+============================== -->
+
+<section
+    class="gameScreen"
+    id="diceGame"
+>
+
+<div class="gameHeader">
+
+<h2>🎲 Dice Roll</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="dice"
+    id="diceResult"
+>
+🎲
+</div>
+
+<button
+    class="btn"
+    onclick="rollDice()"
+>
+ROLL DICE
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     EVEN ODD
+============================== -->
+
+<section
+    class="gameScreen"
+    id="evenoddGame"
+>
+
+<div class="gameHeader">
+
+<h2>🔢 Even or Odd</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="bigText"
+    id="evenResult"
+>
+Choose your prediction
+</div>
+
+<button
+    class="btn"
+    onclick="evenOdd('Even')"
+>
+EVEN
+</button>
+
+<button
+    class="btn"
+    onclick="evenOdd('Odd')"
+>
+ODD
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     MATH
+============================== -->
+
+<section
+    class="gameScreen"
+    id="mathGame"
+>
+
+<div class="gameHeader">
+
+<h2>🧮 Math Challenge</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="bigText"
+    id="mathQuestion"
+>
+</div>
+
+<input
+    class="input"
+    id="mathInput"
+    type="number"
+    placeholder="Answer"
+>
+
+<br>
+
+<button
+    class="btn"
+    onclick="checkMath()"
+>
+CHECK
+</button>
+
+<p
+    class="bigText"
+    id="mathResult"
+>
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     REACTION
+============================== -->
+
+<section
+    class="gameScreen"
+    id="reactionGame"
+>
+
+<div class="gameHeader">
+
+<h2>⚡ Reaction Rush</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    id="reactionBox"
+    class="colorBox"
+    style="background:#662020"
+    onclick="reactionClick()"
+>
+
+WAIT...
+
+</div>
+
+<button
+    class="btn"
+    onclick="startReaction()"
+>
+START
+</button>
+
+<p
+    id="reactionResult"
+    class="bigText"
+>
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     TARGET
+============================== -->
+
+<section
+    class="gameScreen"
+    id="targetGame"
+>
+
+<div class="gameHeader">
+
+<h2>🎯 Target Hunter</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<p class="score">
+
+Score:
+<span id="targetScore">0</span>
+
+</p>
+
+<div
+    class="targetArea"
+    id="targetArea"
+>
+
+<div
+    class="target"
+    id="target"
+    onclick="hitTarget(event)"
+></div>
+
+</div>
+
+<button
+    class="btn"
+    onclick="startTarget()"
+>
+START
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     TIC TAC TOE
+============================== -->
+
+<section
+    class="gameScreen"
+    id="tttGame"
+>
+
+<div class="gameHeader">
+
+<h2>❌ Tic Tac Toe</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<p
+    class="bigText"
+    id="tttStatus"
+>
+Player X Turn
+</p>
+
+<div class="ttt">
+
+<button class="cell" onclick="ttt(0)"></button>
+<button class="cell" onclick="ttt(1)"></button>
+<button class="cell" onclick="ttt(2)"></button>
+
+<button class="cell" onclick="ttt(3)"></button>
+<button class="cell" onclick="ttt(4)"></button>
+<button class="cell" onclick="ttt(5)"></button>
+
+<button class="cell" onclick="ttt(6)"></button>
+<button class="cell" onclick="ttt(7)"></button>
+<button class="cell" onclick="ttt(8)"></button>
+
+</div>
+
+<button
+    class="btn"
+    onclick="resetTTT()"
+>
+NEW GAME
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     MEMORY
+============================== -->
+
+<section
+    class="gameScreen"
+    id="memoryGame"
+>
+
+<div class="gameHeader">
+
+<h2>🧠 Memory Cards</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<p class="score">
+
+Pairs:
+<span id="memoryScore">0</span>
+
+</p>
+
+<div
+    class="memory"
+    id="memoryBoard"
+></div>
+
+<button
+    class="btn"
+    onclick="startMemory()"
+>
+RESTART
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     COLOR
+============================== -->
+
+<section
+    class="gameScreen"
+    id="colorGame"
+>
+
+<div class="gameHeader">
+
+<h2>🎨 Color Match</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="bigText"
+    id="colorQuestion"
+>
+</div>
+
+<button
+    class="btn"
+    onclick="colorAnswer('red')"
+>
+🔴 RED
+</button>
+
+<button
+    class="btn"
+    onclick="colorAnswer('blue')"
+>
+🔵 BLUE
+</button>
+
+<button
+    class="btn"
+    onclick="colorAnswer('green')"
+>
+🟢 GREEN
+</button>
+
+<button
+    class="btn"
+    onclick="colorAnswer('yellow')"
+>
+🟡 YELLOW
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     QUICK TAP
+============================== -->
+
+<section
+    class="gameScreen"
+    id="quickGame"
+>
+
+<div class="gameHeader">
+
+<h2>👆 Quick Tap</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="bigText"
+    id="tapScore"
+>
+0
+</div>
+
+<button
+    class="btn"
+    onclick="tapGame()"
+>
+TAP!
+</button>
+
+<button
+    class="btn"
+    onclick="startTap()"
+>
+START 10 SEC
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     HIGHER LOWER
+============================== -->
+
+<section
+    class="gameScreen"
+    id="higherGame"
+>
+
+<div class="gameHeader">
+
+<h2>🃏 Higher or Lower</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="bigText"
+    id="cardNumber"
+>
+50
+</div>
+
+<p>
+
+Will the next number be higher or lower?
+
+</p>
+
+<button
+    class="btn"
+    onclick="higherLower('higher')"
+>
+⬆️ HIGHER
+</button>
+
+<button
+    class="btn"
+    onclick="higherLower('lower')"
+>
+⬇️ LOWER
+</button>
+
+<p
+    class="bigText"
+    id="higherResult"
+>
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     WORD
+============================== -->
+
+<section
+    class="gameScreen"
+    id="wordGame"
+>
+
+<div class="gameHeader">
+
+<h2>🔤 Word Scramble</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="bigText"
+    id="scrambled"
+>
+</div>
+
+<input
+    class="input"
+    id="wordInput"
+    placeholder="Enter word"
+>
+
+<br>
+
+<button
+    class="btn"
+    onclick="checkWord()"
+>
+CHECK
+</button>
+
+<p
+    class="bigText"
+    id="wordResult"
+>
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ==============================
+     10 SECOND
+============================== -->
+
+<section
+    class="gameScreen"
+    id="tenGame"
+>
+
+<div class="gameHeader">
+
+<h2>⏱️ 10 Second Challenge</h2>
+
+<button class="close" onclick="closeGames()">
+Close
+</button>
+
+</div>
+
+<div class="gameArea">
+
+<div
+    class="bigText"
+    id="tenResult"
+>
+Press START
+</div>
+
+<button
+    class="btn"
+    onclick="startTen()"
+>
+START
+</button>
+
+<button
+    class="btn"
+    onclick="stopTen()"
+>
+STOP
+</button>
+
+</div>
+
+</section>
+
+
+</div>
+
+</div>
+
+
+<!-- ==============================
+     POPUP
+============================== -->
+
+<div id="popup">
+
+<div class="popupBox">
+
+<h1 id="popupTitle">
+🏆 YOU WIN!
+</h1>
+
+<p id="popupText">
+Great Job!
+</p>
+
+<button
+    class="btn"
+    onclick="closePopup()"
+>
+CONTINUE
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* ==============================
+   SOUND
+============================== */
+
+function sound(type){
+
+    const audio=new Audio();
+
+    if(type==="win"){
+
+        audio.src=
+        "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg";
+
+    }
+
+    else{
+
+        audio.src=
+        "https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg";
+
+    }
+
+    audio.volume=.5;
+
+    audio.play().catch(()=>{});
+
+}
+
+
+/* ==============================
+   START
+============================== */
+
+function startHub(){
+
+    document
+    .getElementById("startScreen")
+    .style.display="none";
+
+    document
+    .getElementById("main")
+    .style.display="block";
+
+}
+
+
+function backStart(){
+
+    closeGames();
+
+    document
+    .getElementById("main")
+    .style.display="none";
+
+    document
+    .getElementById("startScreen")
+    .style.display="flex";
+
+}
+
+
+/* ==============================
+   NAVIGATION
+============================== */
+
+function openGame(name){
+
+    closeGames();
+
+    const game=
+    document.getElementById(name+"Game");
+
+    if(game){
+
+        game.classList.add("active");
+
+        game.scrollIntoView({
+            behavior:"smooth"
+        });
+
+    }
+
+
+    if(name==="math"){
+        newMath();
+    }
+
+    if(name==="color"){
+        newColor();
+    }
+
+    if(name==="word"){
+        newWord();
+    }
+
+    if(name==="higher"){
+        newCard();
+    }
+
+    if(name==="memory"){
+        startMemory();
+    }
+
+}
+
+
+function closeGames(){
+
+    document
+    .querySelectorAll(".gameScreen")
+    .forEach(
+        x=>x.classList.remove("active")
+    );
+
+    stopTarget();
+
+    clearTimeout(reactionTimer);
+
+    clearInterval(tapTimer);
+
+    clearInterval(tenTimer);
+
+}
+
+
+/* ==============================
+   POPUP
+============================== */
+
+function showPopup(title,text){
+
+    document
+    .getElementById("popupTitle")
+    .textContent=title;
+
+    document
+    .getElementById("popupText")
+    .textContent=text;
+
+    document
+    .getElementById("popup")
+    .style.display="flex";
+
+}
+
+
+function closePopup(){
+
+    document
+    .getElementById("popup")
+    .style.display="none";
+
+}
+
+
+/* ==============================
+   ROCK PAPER SCISSORS
+============================== */
+
+function rps(player){
+
+    const choices=[
+        "Rock",
+        "Paper",
+        "Scissors"
+    ];
+
+    const bot=
+        choices[
+            Math.floor(
+                Math.random()*3
+            )
+        ];
+
+    let result="";
+
+
+    if(player===bot){
+
+        result="🤝 DRAW!";
+
+    }
+
+    else if(
+
+        player==="Rock" &&
+        bot==="Scissors"
+
+    ){
+
+        result="🏆 YOU WIN!";
+
+    }
+
+    else if(
+
+        player==="Paper" &&
+        bot==="Rock"
+
+    ){
+
+        result="🏆 YOU WIN!";
+
+    }
+
+    else if(
+
+        player==="Scissors" &&
+        bot==="Paper"
+
+    ){
+
+        result="🏆 YOU WIN!";
+
+    }
+
+    else{
+
+        result="❌ BOT WINS!";
+
+    }
+
+
+    document
+    .getElementById("rpsResult")
+    .textContent=
+    "You: "+player+
+    " | Bot: "+bot+
+    " | "+result;
+
+
+    if(result.includes("YOU WIN")){
+
+        sound("win");
+
+    }
+
+    else if(result.includes("BOT")){
+
+        sound("lose");
+
+    }
+
+}
+
+
+/* ==============================
+   GUESS NUMBER
+============================== */
+
+let secret=
+    Math.floor(
+        Math.random()*100
+    )+1;
+
+
+function guessNumber(){
+
+    const value=
+        Number(
+            document
+            .getElementById("guessInput")
+            .value
+        );
+
+
+    if(value===secret){
+
+        document
+        .getElementById("guessResult")
+        .textContent=
+        "🏆 Correct! You Win!";
+
+        sound("win");
+
+        secret=
+        Math.floor(
+            Math.random()*100
+        )+1;
+
+    }
+
+    else if(value<secret){
+
+        document
+        .getElementById("guessResult")
+        .textContent=
+        "⬆️ Try Higher!";
+
+    }
+
+    else{
+
+        document
+        .getElementById("guessResult")
+        .textContent=
+        "⬇️ Try Lower!";
+
+    }
+
+}
+
+
+/* ==============================
+   COIN
+============================== */
+
+function coin(player){
+
+    const result=
+        Math.random()<.5
+        ?"Heads"
+        :"Tails";
+
+
+    const message=
+        player===result
+        ?"🏆 YOU WIN!"
+        :"❌ YOU LOSE!";
+
+
+    document
+    .getElementById("coinResult")
+    .textContent=
+    "Coin: "+result+
+    " → "+message;
+
+
+    sound(
+        player===result
+        ?"win"
+        :"lose"
+    );
+
+}
+
+
+/* ==============================
+   DICE
+============================== */
+
+function rollDice(){
+
+    const number=
+        Math.floor(
+            Math.random()*6
+        )+1;
+
+
+    const faces=[
+        "⚀",
+        "⚁",
+        "⚂",
+        "⚃",
+        "⚄",
+        "⚅"
+    ];
+
+
+    document
+    .getElementById("diceResult")
+    .textContent=
+    faces[number-1];
+
+
+    sound("win");
+
+}
+
+
+/* ==============================
+   EVEN ODD
+============================== */
+
+function evenOdd(choice){
+
+    const number=
+        Math.floor(
+            Math.random()*100
+        )+1;
+
+
+    const actual=
+        number%2===0
+        ?"Even"
+        :"Odd";
+
+
+    const win=
+        choice===actual;
+
+
+    document
+    .getElementById("evenResult")
+    .textContent=
+    number+
+    " is "+actual+
+    " → "+
+    (win?"🏆 YOU WIN!":"❌ YOU LOSE!");
+
+
+    sound(
+        win
+        ?"win"
+        :"lose"
+    );
+
+}
+
+
+/* ==============================
+   MATH
+============================== */
+
+let mathAnswer=0;
+
+
+function newMath(){
+
+    const a=
+        Math.floor(
+            Math.random()*20
+        )+1;
+
+    const b=
+        Math.floor(
+            Math.random()*20
+        )+1;
+
+    const operations=[
+        "+",
+        "-",
+        "*"
+    ];
+
+    const op=
+        operations[
+            Math.floor(
+                Math.random()*3
+            )
+        ];
+
+
+    if(op==="+"){
+        mathAnswer=a+b;
+    }
+
+    if(op==="-"){
+        mathAnswer=a-b;
+    }
+
+    if(op==="*"){
+        mathAnswer=a*b;
+    }
+
+
+    document
+    .getElementById("mathQuestion")
+    .textContent=
+    a+" "+op+" "+b+" = ?";
+
+    document
+    .getElementById("mathInput")
+    .value="";
+
+    document
+    .getElementById("mathResult")
+    .textContent="";
+
+}
+
+
+function checkMath(){
+
+    const answer=
+        Number(
+            document
+            .getElementById("mathInput")
+            .value
+        );
+
+
+    if(answer===mathAnswer){
+
+        document
+        .getElementById("mathResult")
+        .textContent=
+        "🏆 Correct!";
+
+        sound("win");
+
+    }
+
+    else{
+
+        document
+        .getElementById("mathResult")
+        .textContent=
+        "❌ Wrong! Answer: "+
+        mathAnswer;
+
+        sound("lose");
+
+    }
+
+
+    setTimeout(
+        newMath,
+        1200
+    );
+
+}
+
+
+/* ==============================
+   REACTION
+============================== */
+
+let reactionTimer=null;
+
+let reactionStart=0;
+
+let reactionReady=false;
+
+
+function startReaction(){
+
+    const box=
+        document.getElementById("reactionBox");
+
+    clearTimeout(reactionTimer);
+
+    reactionReady=false;
+
+    box.style.background="#662020";
+
+    box.textContent="🔴 WAIT...";
+
+
+    reactionTimer=
+    setTimeout(
+        ()=>{
+
+            reactionReady=true;
+
+            reactionStart=
+                performance.now();
+
+            box.style.background="#126b35";
+
+            box.textContent=
+                "🟢 CLICK NOW!";
+
+        },
+        1000+
+        Math.random()*3000
+    );
+
+}
+
+
+function reactionClick(){
+
+    if(!reactionReady){
+
+        document
+        .getElementById("reactionResult")
+        .textContent=
+        "❌ TOO EARLY!";
+
+        sound("lose");
+
+        clearTimeout(reactionTimer);
+
+        return;
+
+    }
+
+
+    const time=
+        Math.round(
+            performance.now()-
+            reactionStart
+        );
+
+
+    reactionReady=false;
+
+
+    document
+    .getElementById("reactionResult")
+    .textContent=
+    "⚡ "+time+" ms";
+
+
+    sound("win");
+
+}
+
+
+/* ==============================
+   TARGET
+============================== */
+
+let targetScore=0;
+
+let targetTimer=null;
+
+
+function startTarget(){
+
+    stopTarget();
+
+    targetScore=0;
+
+    document
+    .getElementById("targetScore")
+    .textContent=0;
+
+
+    document
+    .getElementById("target")
+    .style.display="block";
+
+
+    moveTarget();
+
+
+    targetTimer=
+    setTimeout(
+        ()=>{
+
+            stopTarget();
+
+            showPopup(
+                "🎯 TIME UP!",
+                "Score: "+targetScore
+            );
+
+            sound("lose");
+
+        },
+        20000
+    );
+
+}
+
+
+function moveTarget(){
+
+    const area=
+        document
+        .getElementById("targetArea");
+
+    const target=
+        document
+        .getElementById("target");
+
+
+    const x=
+        Math.random()*
+        (
+            area.clientWidth-
+            target.offsetWidth
+        );
+
+    const y=
+        Math.random()*
+        (
+            area.clientHeight-
+            target.offsetHeight
+        );
+
+
+    target.style.left=x+"px";
+
+    target.style.top=y+"px";
+
+}
+
+
+function hitTarget(event){
+
+    event.stopPropagation();
+
+    targetScore++;
+
+
+    document
+    .getElementById("targetScore")
+    .textContent=targetScore;
+
+
+    sound("win");
+
+    moveTarget();
+
+}
+
+
+function stopTarget(){
+
+    clearTimeout(targetTimer);
+
+    targetTimer=null;
+
+    const target=
+        document.getElementById("target");
+
+    if(target){
+
+        target.style.display="none";
+
+    }
+
+}
+
+
+/* ==============================
+   TIC TAC TOE
+============================== */
+
+let tttBoard=[
+    "","","",
+    "","","",
+    "","",""
+];
+
+let tttPlayer="X";
+
+let tttOver=false;
+
+
+const winLines=[
+
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+
+    [0,4,8],
+    [2,4,6]
+
+];
+
+
+function ttt(index){
+
+    if(
+        tttBoard[index]||
+        tttOver
+    ){
+
+        return;
+
+    }
+
+
+    tttBoard[index]=tttPlayer;
+
+    renderTTT();
+
+
+    if(checkTTT()){
+
+        tttOver=true;
+
+        showPopup(
+            "🏆 "+tttPlayer+" WINS!",
+            "Great game!"
+        );
+
+        sound("win");
+
+        return;
+
+    }
+
+
+    if(!tttBoard.includes("")){
+
+        tttOver=true;
+
+        showPopup(
+            "🤝 DRAW!",
+            "Try again!"
+        );
+
+        sound("lose");
+
+        return;
+
+    }
+
+
+    tttPlayer=
+        tttPlayer==="X"
+        ?"O"
+        :"X";
+
+
+    document
+    .getElementById("tttStatus")
+    .textContent=
+    "Player "+tttPlayer+" Turn";
+
+}
+
+
+function checkTTT(){
+
+    return winLines.some(
+        line=>{
+
+            const [a,b,c]=line;
+
+            return(
+                tttBoard[a] &&
+                tttBoard[a]===tttBoard[b] &&
+                tttBoard[a]===tttBoard[c]
+            );
+
+        }
+    );
+
+}
+
+
+function renderTTT(){
+
+    document
+    .querySelectorAll(".cell")
+    .forEach(
+        (cell,index)=>{
+
+            cell.textContent=
+            tttBoard[index];
+
+        }
+    );
+
+}
+
+
+function resetTTT(){
+
+    tttBoard=[
+        "","","",
+        "","","",
+        "","",""
+    ];
+
+    tttPlayer="X";
+
+    tttOver=false;
+
+    document
+    .getElementById("tttStatus")
+    .textContent=
+    "Player X Turn";
+
+    renderTTT();
+
+}
+
+
+/* ==============================
+   MEMORY
+============================== */
+
+let memoryValues=[];
+
+let firstCard=null;
+
+let secondCard=null;
+
+let memoryLock=false;
+
+let memoryPairs=0;
+
+
+function startMemory(){
+
+    memoryValues=[
+        "🍎","🍎",
+        "🚀","🚀",
+        "🌟","🌟",
+        "🎮","🎮",
+        "👾","👾",
+        "🔥","🔥",
+        "💎","💎",
+        "🌌","🌌"
+    ];
+
+
+    memoryValues.sort(
+        ()=>Math.random()-.5
+    );
+
+
+    firstCard=null;
+
+    secondCard=null;
+
+    memoryLock=false;
+
+    memoryPairs=0;
+
+
+    document
+    .getElementById("memoryScore")
+    .textContent=0;
+
+
+    const board=
+        document
+        .getElementById("memoryBoard");
+
+
+    board.innerHTML="";
+
+
+    memoryValues.forEach(
+        (value,index)=>{
+
+            const card=
+                document.createElement("div");
+
+            card.className=
+                "memoryCard";
+
+            card.textContent="❓";
+
+            card.onclick=
+                ()=>{
+                    flipCard(
+                        card,
+                        value
+                    );
+                };
+
+            board.appendChild(card);
+
+        }
+    );
+
+}
+
+
+function flipCard(card,value){
+
+    if(
+        memoryLock||
+        card===firstCard||
+        card.textContent!=="❓"
+    ){
+
+        return;
+
+    }
+
+
+    card.textContent=value;
+
+
+    if(!firstCard){
+
+        firstCard=card;
+
+        firstCard.dataset.value=value;
+
+        return;
+
+    }
+
+
+    secondCard=card;
+
+    secondCard.dataset.value=value;
+
+    memoryLock=true;
+
+
+    if(
+        firstCard.dataset.value===
+        secondCard.dataset.value
+    ){
+
+        memoryPairs++;
+
+        document
+        .getElementById("memoryScore")
+        .textContent=
+        memoryPairs;
+
+        sound("win");
+
+        firstCard=null;
+
+        secondCard=null;
+
+        memoryLock=false;
+
+
+        if(memoryPairs===8){
+
+            showPopup(
+                "🧠 YOU WIN!",
+                "All pairs matched!"
+            );
+
+        }
+
+    }
+
+    else{
+
+        setTimeout(
+            ()=>{
+
+                firstCard.textContent="❓";
+
+                secondCard.textContent="❓";
+
+                firstCard=null;
+
+                secondCard=null;
+
+                memoryLock=false;
+
+            },
+            700
+        );
+
+    }
+
+}
+
+
+/* ==============================
+   COLOR MATCH
+============================== */
+
+let correctColor="";
+
+
+function newColor(){
+
+    const colors=[
+        "red",
+        "blue",
+        "green",
+        "yellow"
+    ];
+
+
+    correctColor=
+        colors[
+            Math.floor(
+                Math.random()*colors.length
+            )
+        ];
+
+
+    document
+    .getElementById("colorQuestion")
+    .textContent=
+    "Click: "+correctColor.toUpperCase();
+
+}
+
+
+function colorAnswer(answer){
+
+    if(answer===correctColor){
+
+        showPopup(
+            "🎨 CORRECT!",
+            "Amazing!"
+        );
+
+        sound("win");
+
+    }
+
+    else{
+
+        showPopup(
+            "❌ WRONG!",
+            "Correct: "+
+            correctColor
+        );
+
+        sound("lose");
+
+    }
+
+
+    setTimeout(
+        ()=>{
+            closePopup();
+            newColor();
+        },
+        1000
+    );
+
+}
+
+
+/* ==============================
+   QUICK TAP
+============================== */
+
+let taps=0;
+
+let tapTimer=null;
+
+
+function startTap(){
+
+    taps=0;
+
+    document
+    .getElementById("tapScore")
+    .textContent=0;
+
+
+    clearInterval(tapTimer);
+
+
+    tapTimer=
+    setTimeout(
+        ()=>{
+
+            showPopup(
+                "⚡ TIME UP!",
+                "Taps: "+taps
+            );
+
+            sound("win");
+
+        },
+        10000
+    );
+
+}
+
+
+function tapGame(){
+
+    taps++;
+
+    document
+    .getElementById("tapScore")
+    .textContent=taps;
+
+}
+
+
+/* ==============================
+   HIGHER LOWER
+============================== */
+
+let currentCard=50;
+
+
+function newCard(){
+
+    currentCard=
+        Math.floor(
+            Math.random()*100
+        )+1;
+
+
+    document
+    .getElementById("cardNumber")
+    .textContent=
+    currentCard;
+
+}
+
+
+function higherLower(choice){
+
+    const next=
+        Math.floor(
+            Math.random()*100
+        )+1;
+
+
+    let win=false;
+
+
+    if(
+        choice==="higher" &&
+        next>currentCard
+    ){
+
+        win=true;
+
+    }
+
+
+    if(
+        choice==="lower" &&
+        next<currentCard
+    ){
+
+        win=true;
+
+    }
+
+
+    document
+    .getElementById("higherResult")
+    .textContent=
+    "Next: "+next+
+    " → "+
+    (win?"🏆 YOU WIN!":"❌ YOU LOSE!");
+
+
+    sound(
+        win
+        ?"win"
+        :"lose"
+    );
+
+
+    currentCard=next;
+
+    document
+    .getElementById("cardNumber")
+    .textContent=next;
+
+}
+
+
+/* ==============================
+   WORD SCRAMBLE
+============================== */
+
+const words=[
+    "GALAXY",
+    "COMPUTER",
+    "PYTHON",
+    "ROCKET",
+    "GAMING",
+    "PLANET",
+    "CODING",
+    "FIRE"
+];
+
+let currentWord="";
+
+
+function newWord(){
+
+    currentWord=
+        words[
+            Math.floor(
+                Math.random()*words.length
+            )
+        ];
+
+
+    let letters=
+        currentWord
+        .split("")
+        .sort(
+            ()=>Math.random()-.5
+        )
+        .join("");
+
+
+    document
+    .getElementById("scrambled")
+    .textContent=letters;
+
+}
+
+
+function checkWord(){
+
+    const answer=
+        document
+        .getElementById("wordInput")
+        .value
+        .toUpperCase();
+
+
+    if(answer===currentWord){
+
+        document
+        .getElementById("wordResult")
+        .textContent=
+        "🏆 CORRECT!";
+
+        sound("win");
+
+        setTimeout(
+            newWord,
+            1000
+        );
+
+    }
+
+    else{
+
+        document
+        .getElementById("wordResult")
+        .textContent=
+        "❌ TRY AGAIN!";
+
+        sound("lose");
+
+    }
+
+}
+
+
+/* ==============================
+   10 SECOND CHALLENGE
+============================== */
+
+let tenStart=0;
+
+let tenTimer=null;
+
+
+function startTen(){
+
+    tenStart=
+        performance.now();
+
+
+    document
+    .getElementById("tenResult")
+    .textContent=
+    "STOP WHEN YOU THINK IT IS 10 SECONDS!";
+
+}
+
+
+function stopTen(){
+
+    if(!tenStart){
+
+        return;
+
+    }
+
+
+    const elapsed=
+        (
+            performance.now()-
+            tenStart
+        )/1000;
+
+
+    tenStart=0;
+
+
+    const difference=
+        Math.abs(
+            elapsed-10
+        );
+
+
+    document
+    .getElementById("tenResult")
+    .textContent=
+    elapsed.toFixed(2)+
+    " seconds";
+
+
+    if(difference<0.5){
+
+        showPopup(
+            "🏆 PERFECT!",
+            "Very close to 10 seconds!"
+        );
+
+        sound("win");
+
+    }
+
+    else{
+
+        sound("lose");
+
+    }
+
+}
+
+
+/* ==============================
+   INIT
+============================== */
+
+resetTTT();
+
+</script>
+
+</body>
+
+</html>
+```
